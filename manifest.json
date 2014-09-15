@@ -1,0 +1,25 @@
+{
+  "name": "Context Menus Sample (with Event Page)",
+  "description": "Shows some of the features of the Context Menus API using an event page",
+  "version": "0.7",
+  "permissions": ["contextMenus",
+    "tabs", "https://docs.google.com/feeds/*",
+    "https://www.google.com/accounts/OAuthGetRequestToken",
+    "https://www.google.com/accounts/OAuthAuthorizeToken",
+    "https://www.google.com/accounts/OAuthGetAccessToken"],
+  
+  "browser_action":{
+	"default_icon":"iconBw.png",
+	"default_title":"YouTube Playlist",
+	"default_popup":"list.html"
+  },
+  "content_scripts": [{
+	"matches": ["https://www.youtube.com/watch*"],
+      "js": ["inject.js"]
+	}],
+  "background": {
+    "persistent": true,
+    "page": "background.html"
+  },
+  "manifest_version": 2
+}
