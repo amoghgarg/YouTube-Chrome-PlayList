@@ -105,11 +105,17 @@ function nextClicked(){
 	nowPlay = clicked;
 };
 
+
 function clearClicked(){
-	$("li").remove();
-	chrome.runtime.sendMessage({
-		type:"clear"
-	});
+	if(vidLinks.length>0){
+		var response = confirm("Clear the playlist?");
+		if(response==true){
+			$("li").remove();
+			chrome.runtime.sendMessage({
+				type:"clear"
+			});
+		}
+	}
 };
 
 canChange = true;
@@ -119,17 +125,12 @@ var vidLinks = back.vidLinks;
 currentLength=vidLinks.length;
 
 
-function showInfo(){
-	window.alert(nowPlay);
-}
-
 function linksToTable() {
 
 	playBut = document.getElementById("play");	
 	document.getElementById("forward").onclick=nextClicked;
 	document.getElementById("rewind").onclick=prevClicked;
 	document.getElementById("clear").onclick=clearClicked;
-	document.getElementById("info").onclick=showInfo;
 
 
 	if(back.playing){
@@ -155,7 +156,9 @@ function linksToTable() {
 	var table='';
 	
 	for (i = 0; i < vidLinks.length; i++) {
-		table += "<li id = \"" +i +"\" style=\"overflow:hidden\" class=\"ui-state-default\"><span class=\"ui-icon ui-icon-grip-dotted-horizontal\"></span><span id=\"listIten\" style=\"margin: 0px 0px 4px 0px; \">" + vidLinks[i].substring(12) + "</span><button class=\"remove\"  style=\"float:right; visibility:hidden\">rem</button></li>";
+		table += "<li id = \"" +i +"\" style=\"overflow:hidden\" class=\"ui-state-default\"><span class=\"ui-icon ui-icon-grip-dotted-horizontal\" style=\"float:left\"></span>"+
+		"<div  id=\"listIten\" style=\"width:96%; position:relative; float:left; overflow:hidden; white-space: nowrap; margin: 0px 0px 4px 0px;\">"
+		 + (vidLinks[i].name) + "</div><button class=\"remove\"  style=\"float:right; margin: 6px 0px 0px 0px; visibility:hidden\"></button></li>";
 	}
 	document.getElementById('sortable').innerHTML = table;
 

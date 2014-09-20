@@ -1,21 +1,3 @@
-function onClickHandler(info, tab) {
-  if (info.menuItemId == "radio1" || info.menuItemId == "radio2") {
-    console.log("radio item " + info.menuItemId +
-                " was clicked (previous checked state was "  +
-                info.wasChecked + ")");
-  } else if (info.menuItemId == "checkbox1" || info.menuItemId == "checkbox2") {
-    console.log(JSON.stringify(info));
-    console.log("checkbox item " + info.menuItemId +
-                " was clicked, state is now: " + info.checked +
-                " (previous state was " + info.wasChecked + ")");
-
-  } else {
-    console.log("item " + info.menuItemId + " was clicked");
-    console.log("info: " + JSON.stringify(info));
-    console.log("tab: " + JSON.stringify(tab));
-  }
-};
-
 var vidInd = -1;
 var tabId;
 
@@ -46,7 +28,7 @@ chrome.runtime.onMessage.addListener(
 					console.log("playClicked");
 					vidInd = 0;
 					chrome.tabs.create({
-						url:vidLinks[0],
+						url:vidLinks[0].link,
 						active:false,					
 						},  tabCreated );
 					pageExists = true;
@@ -68,7 +50,7 @@ chrome.runtime.onMessage.addListener(
 					vidInd=0;
 				}
 				chrome.tabs.update(tabId,{
-					url:vidLinks[vidInd],
+					url:vidLinks[vidInd].link,
 					active:false,
 				});
 				chrome.browserAction.setIcon({path:"iconCol.png"});
@@ -86,7 +68,7 @@ chrome.runtime.onMessage.addListener(
 					vidInd=0;
 				}
 				chrome.tabs.update(tabId,{
-					url:vidLinks[vidInd],
+					url:vidLinks[vidInd].link,
 					active:false,
 				});
 				console.log("next");
@@ -97,7 +79,7 @@ chrome.runtime.onMessage.addListener(
 					vidInd=vidLinks.length-1;
 				}
 				chrome.tabs.update(tabId,{
-					url:vidLinks[vidInd],
+					url:vidLinks[vidInd].link,
 					active:false,
 				});
 				console.log("prev");
@@ -107,7 +89,7 @@ chrome.runtime.onMessage.addListener(
 				if(!pageExists && vidLinks.length>0){
 					console.log("playClicked");
 					chrome.tabs.create({
-						url:vidLinks[vidInd],
+						url:vidLinks[vidInd].link,
 						active:false,					
 						},  tabCreated );
 					pageExists = true;
@@ -116,7 +98,7 @@ chrome.runtime.onMessage.addListener(
 				}
 				else{
 					chrome.tabs.update(tabId,{
-						url:vidLinks[vidInd],
+						url:vidLinks[vidInd].link,
 						active:false,
 					});
 				}			
@@ -144,7 +126,7 @@ chrome.runtime.onMessage.addListener(
 				if(id==vidInd){
 					vidInd=(vidInd)%vidLinks.length;
 					chrome.tabs.update(tabId,{
-						url:vidLinks[vidInd],
+						url:vidLinks[vidInd].link,
 						active:false,
 					});
 				}
@@ -181,13 +163,26 @@ chrome.runtime.onMessage.addListener(
 
 var vidLinks = [];
 var handle = function(e) {	
-	vidLinks.push(e.linkUrl);
-	console.log(e.editable);
-	console.log(e.linkUrl);
-	console.log(e.mediaType);
-	console.log(e.menuItemId);
-	console.log(e.pageUrl);
-	console.log(e.srcUrl);
+
+	var urlink = e.linkUrl;
+	var name; 
+
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", e.linkUrl, true);
+	xmlhttp.send();
+	xmlhttp.onreadystatechange=function(){
+		if(xmlhttp.readyState==4 && xmlhttp.status==200){
+			var temp = document.createElement('div');
+			temp.innerHTML = xmlhttp.response;
+			name = temp.getElementsByTagName('title');
+			name = name[0].text;
+			var toAdd = {
+				"link" : urlink,
+				"name" : name
+			};
+			vidLinks.push(toAdd);
+		}
+	}
 };
 
 
@@ -203,9 +198,6 @@ chrome.runtime.onInstalled.addListener(function() {
 	  'app_name': 'My Google Docs Extension'
 		}); */
 
-	  // Create one test item for each context type.
-		var contexts = ["page","selection","link","editable","image","video",
-	                  "audio"];
 	    var title = "Add to YouTube Playlist";
 	    var id = chrome.contextMenus.create({"title": title, "contexts":["link"],
 	                                         "id": "context" ,
