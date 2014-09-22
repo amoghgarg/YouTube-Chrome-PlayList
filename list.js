@@ -124,10 +124,31 @@ nowPlay = back.vidInd;
 var vidLinks = back.vidLinks;
 currentLength=vidLinks.length;
 
+function playlistClicked(){
+	var token;
+
+	chrome.identity.getAuthToken({ 'interactive': true }, function(input){
+    	token = input;
+    	window.alert(token);
+    	var xmlhttp = new XMLHttpRequest();
+	    xmlhttp.open("GET","https://www.googleapis.com/youtube/v3/playlists?part=id&mine=true&access_token="+token,true);
+	    xmlhttp.send();
+		xmlhttp.onreadystatechange=function(){
+			if(xmlhttp.readyState==4 && xmlhttp.status==200){
+			window.alert(xmlhttp.response)
+		}
+	}
+    });
+
+    
+
+    
+}
 
 function linksToTable() {
 
 	playBut = document.getElementById("play");	
+	document.getElementById("playlist").onclick=playlistClicked;
 	document.getElementById("forward").onclick=nextClicked;
 	document.getElementById("rewind").onclick=prevClicked;
 	document.getElementById("clear").onclick=clearClicked;

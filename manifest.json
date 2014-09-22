@@ -1,12 +1,13 @@
 {
-  "name": "Context Menus Sample (with Event Page)",
-  "description": "Shows some of the features of the Context Menus API using an event page",
-  "version": "0.7",
+  "name": "YouTube Playlist",
+  "description": "Manage your YouTube Playlists!!",
+  "version": "0.0.2",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxk8IDinK/i54szpHsdQ6MjdDSlLUBDwPMyWkt+SfYTMo0QAtfbuDBqPtqxnNemkjdu518yc/rurP3rK2TUYcqWLpQpH/7hG6RnNVj07ZfjtqtOTdIG+OUBBV1mwKGfuWwBvuti/2qZ9FAk7OlZowO00SpTM7fjE/wy/1DAQLgEmsC+iEFuDSCShlfW3FVoBiw3S7q2IGR8AuqDb+dxGwD+7WWQjggTQQhgJoOoGli6LmYRA41EaXda2V7KJD/QcPgttaKIT4rTdJZy8NhsOoLy9CoQ9Vb+SgLJUCN6rBIP1yuwhu+KsJdWvRGnRHlttGjCYdbhReWeGdWtppaZAewwIDAQAB",
   "permissions": ["contextMenus",
+    "identity",
     "tabs", "https://docs.google.com/feeds/*",
-    "https://www.google.com/accounts/OAuthGetRequestToken",
-    "https://www.google.com/accounts/OAuthAuthorizeToken",
-    "https://www.google.com/accounts/OAuthGetAccessToken"],
+    "https://accounts.google.com/*", 
+    "https://www.googleapis.com/*"],
   
   "browser_action":{
 	"default_icon":"iconBw.png",
@@ -20,6 +21,10 @@
   "background": {
     "persistent": true,
     "page": "background.html"
+  },
+  "oauth2": {
+    "client_id": "893139596307-e3ltcu42pglj8qrml16ei3auhbe6h7ke.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/youtube"]
   },
   "manifest_version": 2
 }
