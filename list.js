@@ -139,11 +139,11 @@ function playlistClicked(){
 		}
 	}
     });
-
-    
-
-    
 }
+
+$(function() {
+    $( "#playlists" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
+});
 
 function linksToTable() {
 
