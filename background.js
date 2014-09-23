@@ -1,5 +1,11 @@
 var vidInd = -1;
 var tabId;
+var playing = false;
+var pageExists = false;
+var authToken='';
+var vidLinks = [];
+var listList = [];
+
 
 function tabCreated(tab){
 	tabId = tab.id;
@@ -16,8 +22,7 @@ function tabClosed(tabIdin, info){
 	}
 }
 
-var playing = false;
-var pageExists = false;
+
 
 chrome.runtime.onMessage.addListener( 
 	function(request,sender,sendResponse){
@@ -156,12 +161,14 @@ chrome.runtime.onMessage.addListener(
 				}
 				vidInd=parseInt(request.nowPlay);
 				break;
-
+			case "login":
+				listList=[];
+				makeRequest( {"type":"getLists","life":2, "nextPageToken":''} );
+				break;
 		}
 	}
 );
 
-var vidLinks = [];
 var handle = function(e) {	
 
 	var urlink = e.linkUrl;
@@ -201,3 +208,87 @@ chrome.runtime.onInstalled.addListener(function() {
 									    );
  
 });
+
+
+
+function makeRequest(input){
+
+	var url;
+
+	if (input.life<0) return;
+	if(authToken=='' & input.type!="auth") {
+		makeRequest({"type":"auth", "life":1});		
+		return;
+	}
+
+	switch (input.type){
+		case "auth":
+			chrome.identity.getAuthToken({interactive:true}, function(input){
+				authToken = input;
+				makeRequest( {"type":"getLists","life":2, "nextPageToken":''} );
+			})
+			return;
+			break;
+		case "getLists":
+			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&";
+			if(input.nextPageToken!=''){
+				url = url+"pageToken="+input.nextPageToken;
+			}
+			url = url + "&fields=items(id%2Csnippet%2Ftitle)%2CnextPageToken&access_token="+authToken;
+			break;
+		case "getItems":
+			break;
+	}
+
+	var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET",url,true);
+    xmlhttp.send();
+	xmlhttp.onreadystatechange=function(){
+		if(xmlhttp.readyState==4)
+			switch (xmlhttp.status){
+				case 400:
+					makeRequest({"type":"auth", "life":1});
+					input.life = input.life - 1;
+					makeRequest(input);
+					return;
+					break;
+				case 403:
+					makeRequest({"type":"auth", "life":1});
+					input.life = input.life - 1;
+					makeRequest(input);
+					return;
+					break;
+				case 200:
+					switch (input.type){
+						case "getLists":
+							parseListJSON(xmlhttp.response)
+							break;
+						case "getItems":
+							break;
+					}
+					return(xmlhttp.response);
+			}	
+	}
+
+
+}
+
+function parseListJSON(input){
+	var obj = $.parseJSON(input);
+	for (var i = 0; i<obj.items.length; i++){
+		listList.push({"id":obj.items[i].id,'name':obj.items[i].snippet.title});
+	}
+	
+	if(obj.nextPageToken){
+		makeRequest({"type":"getLists","life":2,"nextPageToken":obj.nextPageToken})
+	}
+	else{
+		chrome.runtime.sendMessage({
+		type:"listListUp", "data":listList}
+		);
+	}
+}
+
+function playlistClicked(event,ui){
+	makeRequest({"type":"getLists","nextPageToken":'', "life":2})
+}
