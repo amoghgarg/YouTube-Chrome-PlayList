@@ -155,7 +155,7 @@ function makeRequest(input){
 			if(input.nextPageToken!=''){
 				url = url+"pageToken="+input.nextPageToken;
 			}
-			url = url + "&fields=items(id%2Csnippet)%2CnextPageToken&key="+authToken;
+			url = url + "&fields=items(id%2Csnippet)%2CnextPageToken&access_token="+authToken;
 			break;
 		case getItems:
 			break;
