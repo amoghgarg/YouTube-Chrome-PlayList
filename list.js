@@ -124,17 +124,28 @@ nowPlay = back.vidInd;
 var vidLinks = back.vidLinks;
 currentLength=vidLinks.length;
 
-var authToken;
+function playlistClicked(){
+	var token;
 
+	chrome.identity.getAuthToken({ 'interactive': true }, function(input){
+    	token = input;
+    	window.alert(token);
+    	var xmlhttp = new XMLHttpRequest();
+	    xmlhttp.open("GET","https://www.googleapis.com/youtube/v3/playlists?part=id&mine=true&access_token="+token,true);
+	    xmlhttp.send();
+		xmlhttp.onreadystatechange=function(){
+			if(xmlhttp.readyState==4 && xmlhttp.status==200){
+			window.alert(xmlhttp.response)
+		}
+	}
+    });
+}
 
 $(function() {
     $( "#playlists" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
-    $( "#playlists" ).menu({ disabled: true });
- //    $( "#playlists" ).menu({
- //  		create: fetchPlaylist
-	// });
 });
 
+<<<<<<< HEAD
 function makeRequest(input){
 
 	var url;
@@ -195,6 +206,8 @@ function playlistClicked(event,ui){
 	makeRequest({"type":"getLists","nextPageToken":'', "life":2})
 }
 
+=======
+>>>>>>> parent of 4c348dc... someChanges Made
 function linksToTable() {
 
 	playBut = document.getElementById("play");	
