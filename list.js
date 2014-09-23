@@ -124,26 +124,76 @@ nowPlay = back.vidInd;
 var vidLinks = back.vidLinks;
 currentLength=vidLinks.length;
 
-function playlistClicked(){
-	var token;
+var authToken;
 
-	chrome.identity.getAuthToken({ 'interactive': true }, function(input){
-    	token = input;
-    	window.alert(token);
-    	var xmlhttp = new XMLHttpRequest();
-	    xmlhttp.open("GET","https://www.googleapis.com/youtube/v3/playlists?part=id&mine=true&access_token="+token,true);
-	    xmlhttp.send();
-		xmlhttp.onreadystatechange=function(){
-			if(xmlhttp.readyState==4 && xmlhttp.status==200){
-			window.alert(xmlhttp.response)
-		}
-	}
-    });
-}
 
 $(function() {
     $( "#playlists" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
+    $( "#playlists" ).menu({ disabled: true });
+ //    $( "#playlists" ).menu({
+ //  		create: fetchPlaylist
+	// });
 });
+
+function makeRequest(input){
+
+	var url;
+
+	if (input.life<0) return;
+
+	switch (input.type){
+		case "auth":
+			chrome.identity.getAuthToken({interactive:true}, function(input){
+				authToken = input;
+				window.alert(authToken);	
+				console.log(authToken);
+			})
+			return;
+			break;
+		case "getLists":
+			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&";
+			if(input.nextPageToken!=''){
+				url = url+"pageToken="+input.nextPageToken;
+			}
+			url = url + "&fields=items(id%2Csnippet)%2CnextPageToken&key="+authToken;
+			break;
+		case getItems:
+			break;
+	}
+
+	var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET",url,true);
+    xmlhttp.send();
+	xmlhttp.onreadystatechange=function(){
+		if(xmlhttp.readyState==4)
+			switch (xmlhttp.status){
+				case 400:
+					makeRequest({"type":"auth", "life":1});
+					input.life = input.life - 1;
+					window.alert(xmlhttp.responseText);
+					makeRequest(input);
+					return;
+					break;
+				case 403:
+					makeRequest({"type":"auth", "life":1});
+					input.life = input.life - 1;
+					window.alert(xmlhttp.responseText);
+					makeRequest(input);
+					return;
+					break;
+				case 200:
+					window.alert(xmlhttp.responseText);
+					return(xmlhttp.response);
+			}	
+	}
+
+
+}
+
+
+function playlistClicked(event,ui){
+	makeRequest({"type":"getLists","nextPageToken":'', "life":2})
+}
 
 function linksToTable() {
 
