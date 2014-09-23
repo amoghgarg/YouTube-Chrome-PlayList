@@ -206,8 +206,6 @@ function playlistClicked(event,ui){
 	makeRequest({"type":"getLists","nextPageToken":'', "life":2})
 }
 
-=======
->>>>>>> parent of 4c348dc... someChanges Made
 function linksToTable() {
 
 	playBut = document.getElementById("play");	
