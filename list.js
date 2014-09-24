@@ -125,9 +125,26 @@ var vidLinks = back.vidLinks;
 currentLength=vidLinks.length;
 
 $(function() {
-    $( "#playlists" ).selectmenu().selectmenu( "menuWidget" ).addClass( "overflow" );
-    $( "#playlists" ).selectmenu({ appendTo: "someElem" });
+    $( "#playlists" ).selectmenu({select:playListSel});
 });
+
+function playListSel(event, ui){
+	window.alert("Playist Selected is: "+ (ui.item.element) + (ui.item.index) + (ui.item.value) + (ui.item.label))
+	//the keys of ui: the element, index, value, label
+
+	listInd = ui.item.index;
+	if(listInd==0){
+		//Saving the list.
+	}
+	else{
+		listInd -=1;
+		chrome.runtime.sendMessage({
+			"type":"listSel",
+			"index":listInd
+		})
+	}
+
+}
 
 
 function login(){
@@ -137,6 +154,12 @@ function login(){
 };
 
 function linksToTable() {
+
+	canChange = true;
+	var back = chrome.extension.getBackgroundPage();
+	nowPlay = back.vidInd;
+	var vidLinks = back.vidLinks;
+	currentLength=vidLinks.length;
 
 	playBut = document.getElementById("play");	
 	document.getElementById("playlist").onclick=login;
@@ -297,18 +320,23 @@ chrome.runtime.onMessage.addListener(
 	function(request,sender,sendResponse){
 		switch(request.type){
 			case "listListUp":
-				window.alert(request.data[5].name);
 				var text = "";	
 				for (var i=0; i<request.data.length; i++){
 					text=text+"<option>"+request.data[i].name+"</option>";
 				}
-				window.alert(text);
-				document.getElementById('playlists').innerHTML =+text;
-				
+				document.getElementById('listNames').innerHTML += text;
+				$( "#playlists" ).selectmenu( "refresh" );
+				break;
+			case "vidLinksUp":
+				window.alert("Updating list")
+				linksToTable();
+				break;
 
 		}
 	}
 )
+
+
 
 //Get the videos:
 //https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PL9425C2A10C2994FF&fields=items(snippet(title%2CresourceId%2FvideoId))%2CnextPageToken&key={YOUR_API_KEY}

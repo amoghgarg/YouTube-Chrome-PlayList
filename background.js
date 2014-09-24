@@ -165,6 +165,8 @@ chrome.runtime.onMessage.addListener(
 				listList=[];
 				makeRequest( {"type":"getLists","life":2, "nextPageToken":''} );
 				break;
+			case "listSel":
+				makeRequest({"type":"getVids","life":2, "nextPageToken":'', "listID":listList[request.index].id});
 		}
 	}
 );
@@ -236,7 +238,9 @@ function makeRequest(input){
 			}
 			url = url + "&fields=items(id%2Csnippet%2Ftitle)%2CnextPageToken&access_token="+authToken;
 			break;
-		case "getItems":
+		case "getVids":
+			url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId="
+			url = url + input.listID + "&fields=items(snippet(title%2CresourceId%2FvideoId))%2CnextPageToken&access_token="+authToken;
 			break;
 	}
 
@@ -263,7 +267,9 @@ function makeRequest(input){
 						case "getLists":
 							parseListJSON(xmlhttp.response)
 							break;
-						case "getItems":
+						case "getVids":
+							window.alert(xmlhttp.responseText)
+							parseVidListJSON(xmlhttp.response)
 							break;
 					}
 					return(xmlhttp.response);
@@ -271,6 +277,33 @@ function makeRequest(input){
 	}
 
 
+}
+
+function parseVidListJSON(input){
+	
+	var obj = $.parseJSON(input);
+	window.alert("Length if items"+obj.items.length)
+	for (var i = 0; i<obj.items.length; i++){
+		window
+		vidLinks.push({			
+			"link" : "https://www.youtube.com/watch?v="+obj.items[i].snippet.resourceId.videoId,
+			"name" : obj.items[i].snippet.title
+		});
+		window.alert("VidlInk length"+vidLinks.length)
+	}
+	window.alert("VidlInk length after "+vidLinks.length)
+	if(obj.nextPageToken){
+		makeRequest({"type":"getLists","life":2,"nextPageToken":obj.nextPageToken})
+	}
+	else{
+		window.alert("Calling update list")
+		for (var i = 0; i<vidLinks.length; i++){
+			window.alert(vidLinks[i].name)
+		}
+		chrome.runtime.sendMessage({
+		type:"vidLinksUp"}
+		);
+	}
 }
 
 function parseListJSON(input){
