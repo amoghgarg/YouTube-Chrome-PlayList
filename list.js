@@ -10,12 +10,19 @@ function playClicked(){
 	      	primary: "ui-icon-pause"
       	  }
     	});
-		console.log("playClicked");
+		
 		playButton = document.getElementById("play");	
 		playButton.onclick = pauseClicked;
+
+		back = chrome.extension.getBackgroundPage();
+		nowPlay = back.vidInd;
+		$("#"+nowPlay).addClass('ui-state-active');
+		$("#"+nowPlay).removeClass('ui-state-default');
+
 		chrome.runtime.sendMessage(
 			{type : "playClick"}
 		);
+		("#")
 	};
 };
 
@@ -27,6 +34,7 @@ $(function() {
     	handle: 'span',
     	start: function(event, ui){
     		before = ui.item.index();
+    		window.alert(before)
     	},
     	stop: function(event,ui){
     		updateID();
@@ -52,6 +60,11 @@ function updateID(){
 };
 
 function pauseClicked(){
+
+	back = chrome.extension.getBackgroundPage();
+	nowPlay = back.vidInd;
+	$("#"+nowPlay).removeClass('ui-state-active');
+	$("#"+nowPlay).addClass('ui-state-default');
 	$( "#play" ).button({
 	      text: false,
 	      icons: {
@@ -110,7 +123,7 @@ function clearClicked(){
 	if(vidLinks.length>0){
 		var response = confirm("Clear the playlist?");
 		if(response==true){
-			$("li").remove();
+			$(".vidItem").remove();
 			chrome.runtime.sendMessage({
 				type:"clear"
 			});
@@ -123,10 +136,6 @@ var back = chrome.extension.getBackgroundPage();
 nowPlay = back.vidInd;
 var vidLinks = back.vidLinks;
 currentLength=vidLinks.length;
-
-$(function() {
-    $( "#playlists" ).selectmenu({select:playListSel});
-});
 
 function playListSel(event, ui){
 	listInd = ui.item.index;
@@ -150,61 +159,59 @@ function login(){
 			});
 };
 
+function updateLoginSpan(){
+	back = chrome.extension.getBackgroundPage();
+	nowPlay = back.vidInd;
+	vidLinks = back.vidLinks;
+	currentLength=vidLinks.length;
+	
+
+	if(back.loggedIn){
+		listList = back.listList;
+		var text = "<select name=\"speed\" id=\"playlists\" style=\"width: 158px\">"+
+	      			"<option>Save current playlist to YouTube account</option>"+
+	     			"<optgroup label=\"Your playlists\" id=\"listNames\">"
+		for (var i=0; i<listList.length; i++){
+			text=text+"<option>"+listList[i].name+"</option>";
+		}
+		text = text + "</optgroup>" + "</select>";	
+		document.getElementById('loginSpan').innerHTML = text;
+		$( "#playlists" ).selectmenu();
+		$( "#playlists" ).selectmenu("refresh");	
+		$( "#playlists" ).selectmenu({select:playListSel});	
+	}
+	else{
+		document.getElementById('loginSpan').innerHTML = "<button id='loginButton'>YouTube Login</button>";
+		$( "#loginButton" ).button({
+	      text: true,
+    	});
+    	document.getElementById("loginButton").onclick=login;
+	}
+}
+
 
 
 function linksToTable() {
 
 	back = chrome.extension.getBackgroundPage();
 	nowPlay = back.vidInd;
+
 	vidLinks = back.vidLinks;
 	currentLength=vidLinks.length;
-	listList = back.listList;
-
-	// if(back.loggedIn){
-	// 	var text = "";	
-	// 	for (var i=0; i<listList; i++){
-	// 		text=text+"<ui>"+listList[i].name+"</ui>";
-	// 	}
-	// 	document.getElementById('listNames').innerHTML += text;
-	// 	$( "#playlists" ).selectmenu( "refresh" );
-	// 	$( "#playlists" ).style.visibility="visible";
-	// }
-	// else{
-	// 	$( "#playlists" ).style.visibility="hidden";
-	// }
 	
 
-	playBut = document.getElementById("play");	
-	document.getElementById("playlist").onclick=login;
+	updateLoginSpan();
+	
+	playBut = document.getElementById("play");		
 	document.getElementById("forward").onclick=nextClicked;
 	document.getElementById("rewind").onclick=prevClicked;
 	document.getElementById("clear").onclick=clearClicked;
 
 
-	if(back.playing){
-		playBut.onclick = pauseClicked;
-		$( "#play" ).button({
-	      text: false,
-	      icons: {
-	      	primary: "ui-icon-pause"
-      	  }
-    	});
-	}
-	else{
-		playBut.onclick = playClicked;
-		$( "#play" ).button({
-	      text: false,
-	      icons: {
-	      	primary: "ui-icon-play"
-      	  }
-    	});
-	}
-	
-
 	var table='';
-	
+	//ui-state-default
 	for (i = 0; i < vidLinks.length; i++) {
-		table += "<li id = \"" +i +"\" style=\"overflow:hidden\" class=\"ui-state-default\"><span class=\"ui-icon ui-icon-grip-dotted-horizontal\" style=\"float:left\"></span>"+
+		table += "<li id = \"" +i +"\" style=\"overflow:hidden\" class=\"vidItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\" style=\"float:left\"></span>"+
 		"<div  id=\"listIten\" style=\"width:96%; position:relative; float:left; overflow:hidden; white-space: nowrap; margin: 0px 0px 4px 0px;\">"
 		 + (vidLinks[i].name) + "</div><button class=\"remove\"  style=\"float:right; margin: 6px 0px 0px 0px; visibility:hidden\"></button></li>";
 	}
@@ -234,17 +241,37 @@ function linksToTable() {
     	removeItem(id);
     });
 
-    $("#"+nowPlay).addClass('ui-state-active');
-	$("#"+nowPlay).removeClass('ui-state-default');
+
+    if(back.playing){
+		playBut.onclick = pauseClicked;
+		$( "#play" ).button({
+	      text: false,
+	      icons: {
+	      	primary: "ui-icon-pause"
+      	  }
+    	});
+    	$("#"+nowPlay).addClass('ui-state-active');
+		$("#"+nowPlay).removeClass('ui-state-default');
+	}
+	else{
+		playBut.onclick = playClicked;
+		$( "#play" ).button({
+	      text: false,
+	      icons: {
+	      	primary: "ui-icon-play"
+      	  }
+    	});
+	}
+    
 
 
-	 $("li").mouseenter(
-      function(){       
+	$(".vidItem").mouseenter(
+      function(){ 
         $(this).removeClass("ui-state-default");
         $(this).addClass("ui-state-hover");
         $(this).children("button")[0].style.visibility="visible";
       });
-    $("li").mouseleave(
+    $(".vidItem").mouseleave(
       function(){
         $(this).addClass("ui-state-default");
         $(this).removeClass("ui-state-hover");
@@ -333,12 +360,7 @@ chrome.runtime.onMessage.addListener(
 	function(request,sender,sendResponse){
 		switch(request.type){
 			case "listListUp":
-				var text = "";	
-				for (var i=0; i<request.data.length; i++){
-					text=text+"<option>"+request.data[i].name+"</option>";
-				}
-				document.getElementById('listNames').innerHTML += text;
-				$( "#playlists" ).selectmenu( "refresh" );
+				updateLoginSpan();
 				break;
 			case "vidLinksUp":
 				linksToTable();

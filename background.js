@@ -11,7 +11,6 @@ var loggedIn = false;
 
 function tabCreated(tab){
 	tabId = tab.id;
-	console.log(tabId);
 };
 
 chrome.tabs.onRemoved.addListener(tabClosed);
@@ -24,15 +23,11 @@ function tabClosed(tabIdin, info){
 	}
 }
 
-
-
 chrome.runtime.onMessage.addListener( 
 	function(request,sender,sendResponse){
 		switch(request.type){
 			case "playClick":
-				console.log("background: playCLicked");
 				if(!pageExists && vidLinks.length>0){
-					console.log("playClicked");
 					vidInd = 0;
 					chrome.tabs.create({
 						url:vidLinks[0].link,
@@ -78,7 +73,6 @@ chrome.runtime.onMessage.addListener(
 					url:vidLinks[vidInd].link,
 					active:false,
 				});
-				console.log("next");
 				break;
 			case "prevClicked":
 				vidInd--;
@@ -89,12 +83,10 @@ chrome.runtime.onMessage.addListener(
 					url:vidLinks[vidInd].link,
 					active:false,
 				});
-				console.log("prev");
 				break;
 			case "songChanged":
 				vidInd=request.newInd;
 				if(!pageExists && vidLinks.length>0){
-					console.log("playClicked");
 					chrome.tabs.create({
 						url:vidLinks[vidInd].link,
 						active:false,					
@@ -164,8 +156,7 @@ chrome.runtime.onMessage.addListener(
 				vidInd=parseInt(request.nowPlay);
 				break;
 			case "login":
-				makeRequest({"type":"auth", "life":1});	
-				updateListList();
+				makeRequest({"type":"auth", "life":2, "first":1});					
 				break;
 			case "listSel":
 				makeRequest({"type":"getVids","life":2, "nextPageToken":'', "listID":listList[request.index].id});
@@ -229,10 +220,17 @@ function makeRequest(input){
 
 	switch (input.type){
 		case "auth":
-			chrome.identity.getAuthToken({interactive:true}, function(input){
-				if(input){
-					authToken = input;
+			chrome.identity.getAuthToken({interactive:true}, function(token){
+				if(token){
+					var firstAuth;
+					if(authToken==''){
+						firstAuth = true;
+					}
+					authToken = token;
 					loggedIn = true;
+					if(firstAuth){
+						updateListList();
+					}
 				}
 			})
 			return 0;
@@ -329,7 +327,7 @@ function parseListJSON(input){
 	}
 	else{
 		chrome.runtime.sendMessage({
-		type:"listListUp", "data":listList}
+		type:"listListUp"}
 		);
 	}
 }
