@@ -5,6 +5,8 @@ var pageExists = false;
 var authToken='';
 var vidLinks = [];
 var listList = [];
+var listListETag = '';
+var loggedIn = false;
 
 
 function tabCreated(tab){
@@ -162,14 +164,18 @@ chrome.runtime.onMessage.addListener(
 				vidInd=parseInt(request.nowPlay);
 				break;
 			case "login":
-				listList=[];
-				makeRequest( {"type":"getLists","life":2, "nextPageToken":''} );
+				makeRequest({"type":"auth", "life":1});	
+				updateListList();
 				break;
 			case "listSel":
 				makeRequest({"type":"getVids","life":2, "nextPageToken":'', "listID":listList[request.index].id});
 		}
 	}
 );
+
+function updateListList(){
+	makeRequest({"type":"listETag", "life":2});		
+};
 
 var handle = function(e) {	
 
@@ -194,9 +200,6 @@ var handle = function(e) {
 	}
 };
 
-function onAuthorised(token){
-	window("Tokenis"+token);
-}
 
 chrome.runtime.onInstalled.addListener(function() {
 
@@ -215,21 +218,24 @@ chrome.runtime.onInstalled.addListener(function() {
 
 function makeRequest(input){
 
+	input.life = input.life - 1;
 	var url;
 
 	if (input.life<0) return;
 	if(authToken=='' & input.type!="auth") {
-		makeRequest({"type":"auth", "life":1});		
+		makeRequest({"type":"auth", "life":input.life});		
 		return;
 	}
 
 	switch (input.type){
 		case "auth":
 			chrome.identity.getAuthToken({interactive:true}, function(input){
-				authToken = input;
-				makeRequest( {"type":"getLists","life":2, "nextPageToken":''} );
+				if(input){
+					authToken = input;
+					loggedIn = true;
+				}
 			})
-			return;
+			return 0;
 			break;
 		case "getLists":
 			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&";
@@ -242,64 +248,70 @@ function makeRequest(input){
 			url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId="
 			url = url + input.listID + "&fields=items(snippet(title%2CresourceId%2FvideoId))%2CnextPageToken&access_token="+authToken;
 			break;
+		case "listETag":
+			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&fields=etag&access_token="+authToken;
+			break;
 	}
 
 	var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET",url,true);
     xmlhttp.send();
+
 	xmlhttp.onreadystatechange=function(){
-		if(xmlhttp.readyState==4)
+		if(xmlhttp.readyState==4){
 			switch (xmlhttp.status){
+				case 401:
+					makeRequest({"type":"auth", "life":1});					
+					makeRequest(input);
+					return;
+					break;
 				case 400:
 					makeRequest({"type":"auth", "life":1});
-					input.life = input.life - 1;
 					makeRequest(input);
 					return;
 					break;
 				case 403:
 					makeRequest({"type":"auth", "life":1});
-					input.life = input.life - 1;
 					makeRequest(input);
 					return;
 					break;
 				case 200:
 					switch (input.type){
+
 						case "getLists":
 							parseListJSON(xmlhttp.response)
 							break;
 						case "getVids":
-							window.alert(xmlhttp.responseText)
 							parseVidListJSON(xmlhttp.response)
 							break;
+						case "listETag":
+							var obj = $.parseJSON(xmlhttp.response);
+							if(obj.etag!=listListETag){
+								listListETag = obj.etag;
+								listList=[];
+								makeRequest( {"type":"getLists","life":2, "nextPageToken":''} );
+							}
+							break;
 					}
-					return(xmlhttp.response);
-			}	
+					break;
+			}
+		}		
 	}
-
-
 }
 
 function parseVidListJSON(input){
 	
 	var obj = $.parseJSON(input);
-	window.alert("Length if items"+obj.items.length)
 	for (var i = 0; i<obj.items.length; i++){
-		window
 		vidLinks.push({			
 			"link" : "https://www.youtube.com/watch?v="+obj.items[i].snippet.resourceId.videoId,
 			"name" : obj.items[i].snippet.title
 		});
-		window.alert("VidlInk length"+vidLinks.length)
 	}
-	window.alert("VidlInk length after "+vidLinks.length)
 	if(obj.nextPageToken){
 		makeRequest({"type":"getLists","life":2,"nextPageToken":obj.nextPageToken})
 	}
 	else{
-		window.alert("Calling update list")
-		for (var i = 0; i<vidLinks.length; i++){
-			window.alert(vidLinks[i].name)
-		}
 		chrome.runtime.sendMessage({
 		type:"vidLinksUp"}
 		);

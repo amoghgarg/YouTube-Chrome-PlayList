@@ -129,9 +129,6 @@ $(function() {
 });
 
 function playListSel(event, ui){
-	window.alert("Playist Selected is: "+ (ui.item.element) + (ui.item.index) + (ui.item.value) + (ui.item.label))
-	//the keys of ui: the element, index, value, label
-
 	listInd = ui.item.index;
 	if(listInd==0){
 		//Saving the list.
@@ -153,13 +150,29 @@ function login(){
 			});
 };
 
+
+
 function linksToTable() {
 
-	canChange = true;
-	var back = chrome.extension.getBackgroundPage();
+	back = chrome.extension.getBackgroundPage();
 	nowPlay = back.vidInd;
-	var vidLinks = back.vidLinks;
+	vidLinks = back.vidLinks;
 	currentLength=vidLinks.length;
+	listList = back.listList;
+
+	// if(back.loggedIn){
+	// 	var text = "";	
+	// 	for (var i=0; i<listList; i++){
+	// 		text=text+"<ui>"+listList[i].name+"</ui>";
+	// 	}
+	// 	document.getElementById('listNames').innerHTML += text;
+	// 	$( "#playlists" ).selectmenu( "refresh" );
+	// 	$( "#playlists" ).style.visibility="visible";
+	// }
+	// else{
+	// 	$( "#playlists" ).style.visibility="hidden";
+	// }
+	
 
 	playBut = document.getElementById("play");	
 	document.getElementById("playlist").onclick=login;
@@ -328,7 +341,6 @@ chrome.runtime.onMessage.addListener(
 				$( "#playlists" ).selectmenu( "refresh" );
 				break;
 			case "vidLinksUp":
-				window.alert("Updating list")
 				linksToTable();
 				break;
 
