@@ -1,9 +1,13 @@
-window.onload=linksToTable;
+window.onload=loadThings;
 var currentLength;
+var canChange = true;
+var nowPlay;
+var listInd;
+
 
 function playClicked(){
 
-	if(vidLinks.length>0){
+	if(currentLength>0){
 		$( "#play" ).button({
 	      text: false,
 	      icons: {
@@ -16,6 +20,10 @@ function playClicked(){
 
 		back = chrome.extension.getBackgroundPage();
 		nowPlay = back.vidInd;
+
+		if( !nowPlay || nowPlay==-1){
+			nowPlay = 0
+		}
 		$("#"+nowPlay).addClass('ui-state-active');
 		$("#"+nowPlay).removeClass('ui-state-default');
 
@@ -34,7 +42,6 @@ $(function() {
     	handle: 'span',
     	start: function(event, ui){
     		before = ui.item.index();
-    		window.alert(before)
     	},
     	stop: function(event,ui){
     		updateID();
@@ -86,7 +93,7 @@ function prevClicked(){
 	);
 
 	if(nowPlay==0){
-		var clicked = vidLinks.length-1;
+		var clicked = currentLength-1;
 	}
 	else{
 		var clicked = nowPlay-1;
@@ -104,7 +111,7 @@ function nextClicked(){
 		type:"nextClicked"}
 	);
 	
-	if(nowPlay==vidLinks.length-1){
+	if(nowPlay==currentLength-1){
 		var clicked = 0;
 	}
 	else{
@@ -120,36 +127,41 @@ function nextClicked(){
 
 
 function clearClicked(){
-	if(vidLinks.length>0){
+	if(currentLength>0){
 		var response = confirm("Clear the playlist?");
 		if(response==true){
-			$(".vidItem").remove();
-			chrome.runtime.sendMessage({
-				type:"clear"
-			});
+			clearQueue();
 		}
 	}
 };
 
-canChange = true;
-var back = chrome.extension.getBackgroundPage();
-nowPlay = back.vidInd;
-var vidLinks = back.vidLinks;
-currentLength=vidLinks.length;
+function clearQueue(){
+	$(".vidItem").remove();
+			chrome.runtime.sendMessage({
+		type:"clear"
+	});
+
+	$( "#play" ).button({
+      text: false,
+      icons: {
+      	primary: "ui-icon-play"
+  	  }
+	});
+};
 
 function playListSel(event, ui){
 	listInd = ui.item.index;
-	if(listInd==0){
-		//Saving the list.
+	if(currentLength>0){
+		var response = confirm("New queue would be loaded. Clear current queue?");
+		if(response){
+			clearQueue();
+		}
 	}
-	else{
-		listInd -=1;
-		chrome.runtime.sendMessage({
-			"type":"listSel",
-			"index":listInd
-		})
-	}
-
+	$( "#playlists" ).selectmenu({select:playListSel});	
+	chrome.runtime.sendMessage({
+		"type":"listSel",
+		"index":listInd
+	})
 }
 
 
@@ -161,24 +173,28 @@ function login(){
 
 function updateLoginSpan(){
 	back = chrome.extension.getBackgroundPage();
-	nowPlay = back.vidInd;
-	vidLinks = back.vidLinks;
-	currentLength=vidLinks.length;
-	
-
-	if(back.loggedIn){
+	if(back.loggedIn){		
+		listInd = back.listIndex;
 		listList = back.listList;
+		
 		var text = "<select name=\"speed\" id=\"playlists\" style=\"width: 158px\">"+
-	      			"<option>Save current playlist to YouTube account</option>"+
-	     			"<optgroup label=\"Your playlists\" id=\"listNames\">"
+	      			"<optgroup label=\"Your playlists\" id=\"listNames\">"
 		for (var i=0; i<listList.length; i++){
-			text=text+"<option>"+listList[i].name+"</option>";
+			if(listInd==i){
+				//window.alert(listInd)
+				text=text+"<option selected=\"selected\">"+listList[i].name+"</option>";
+			}
+			else{
+				text=text+"<option>"+listList[i].name+"</option>";
+			}
+			
 		}
 		text = text + "</optgroup>" + "</select>";	
 		document.getElementById('loginSpan').innerHTML = text;
 		$( "#playlists" ).selectmenu();
 		$( "#playlists" ).selectmenu("refresh");	
 		$( "#playlists" ).selectmenu({select:playListSel});	
+		//window.alert(listInd)
 	}
 	else{
 		document.getElementById('loginSpan').innerHTML = "<button id='loginButton'>YouTube Login</button>";
@@ -189,36 +205,39 @@ function updateLoginSpan(){
 	}
 }
 
+function testFunction(){
+	window.alert(listInd);
+}
 
-
-function linksToTable() {
-
-	back = chrome.extension.getBackgroundPage();
-	nowPlay = back.vidInd;
-
-	vidLinks = back.vidLinks;
-	currentLength=vidLinks.length;
-	
-
+function loadThings() {
+	updateTable();
 	updateLoginSpan();
-	
+}
+
+function updateTable(){
+	back = chrome.extension.getBackgroundPage();
+	vidLinks = back.vidLinks;
+	nowPlay = back.vidInd;
+	currentLength = vidLinks.length;
+
 	playBut = document.getElementById("play");		
 	document.getElementById("forward").onclick=nextClicked;
 	document.getElementById("rewind").onclick=prevClicked;
 	document.getElementById("clear").onclick=clearClicked;
+	//$("#test").click( testFunction);
 
 
 	var table='';
 	//ui-state-default
-	for (i = 0; i < vidLinks.length; i++) {
+	for (i = 0; i < currentLength; i++) {
 		table += "<li id = \"" +i +"\" style=\"overflow:hidden\" class=\"vidItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\" style=\"float:left\"></span>"+
 		"<div  id=\"listIten\" style=\"width:96%; position:relative; float:left; overflow:hidden; white-space: nowrap; margin: 0px 0px 4px 0px;\">"
 		 + (vidLinks[i].name) + "</div><button class=\"remove\"  style=\"float:right; margin: 6px 0px 0px 0px; visibility:hidden\"></button></li>";
 	}
 	document.getElementById('sortable').innerHTML = table;
 
+	//// Vid Item changes
 	$("li").click(songChosen);
-
 	$( ".remove" ).button({
       text: "remove",
       icons: {
@@ -240,8 +259,21 @@ function linksToTable() {
     	//vidLinks.splice(id,1);
     	removeItem(id);
     });
+    $(".vidItem").mouseenter(
+      function(){ 
+        $(this).removeClass("ui-state-default");
+        $(this).addClass("ui-state-hover");
+        $(this).children("button")[0].style.visibility="visible";
+      });
+    $(".vidItem").mouseleave(
+      function(){
+        $(this).addClass("ui-state-default");
+        $(this).removeClass("ui-state-hover");
+        $(this).children("button")[0].style.visibility="hidden";
+      });
+     ///////////////////////////////////////
 
-
+    //// Play and pause button cofiguration
     if(back.playing){
 		playBut.onclick = pauseClicked;
 		$( "#play" ).button({
@@ -262,26 +294,9 @@ function linksToTable() {
       	  }
     	});
 	}
-    
-
-
-	$(".vidItem").mouseenter(
-      function(){ 
-        $(this).removeClass("ui-state-default");
-        $(this).addClass("ui-state-hover");
-        $(this).children("button")[0].style.visibility="visible";
-      });
-    $(".vidItem").mouseleave(
-      function(){
-        $(this).addClass("ui-state-default");
-        $(this).removeClass("ui-state-hover");
-        $(this).children("button")[0].style.visibility="hidden";
-      });
-
-
-
-
+    //////////////////////////////////////
 }
+
 
 function removeItem(id){
 
@@ -291,7 +306,7 @@ function removeItem(id){
 	});
 	
 	if(nowPlay>id){
-		nowPlay = (nowPlay-1)%vidLinks.length;
+		nowPlay = (nowPlay-1)%currentLength;
 	}
 	updateID();
 
@@ -363,7 +378,7 @@ chrome.runtime.onMessage.addListener(
 				updateLoginSpan();
 				break;
 			case "vidLinksUp":
-				linksToTable();
+				updateTable();
 				break;
 
 		}

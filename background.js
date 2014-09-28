@@ -6,6 +6,7 @@ var authToken='';
 var vidLinks = [];
 var listList = [];
 var listListETag = '';
+var listIndex = -1;
 var loggedIn = false;
 
 
@@ -104,6 +105,7 @@ chrome.runtime.onMessage.addListener(
 				break;	
 			case "clear":
 				vidLinks=[];
+				vidInd = -1;
 			    playing=false;
 				chrome.tabs.remove(tabId);
 				break;
@@ -137,6 +139,7 @@ chrome.runtime.onMessage.addListener(
 				})
 				break;
 			case "listChanged":
+				//Sortable List changed
 				bef = request.before;
 				aft = request.after;
 				if(bef<aft){
@@ -159,7 +162,10 @@ chrome.runtime.onMessage.addListener(
 				makeRequest({"type":"auth", "life":2, "first":1});					
 				break;
 			case "listSel":
-				makeRequest({"type":"getVids","life":2, "nextPageToken":'', "listID":listList[request.index].id});
+				// A list os selected from the playlists. 
+				listIndex = request.index;
+				makeRequest({"type":"getVids","life":2, "nextPageToken":'', "listID":listList[listIndex].id});
+				vidInd = -1;
 		}
 	}
 );
