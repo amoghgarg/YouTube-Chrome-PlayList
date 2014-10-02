@@ -5,6 +5,8 @@ var nowPlay;
 var listInd;
 
 
+
+
 function playClicked(){
 
 	if(currentLength>0){
@@ -35,7 +37,7 @@ function playClicked(){
 };
 
 $(function() {
-    $( "#sortable" ).sortable( {	
+    $( "#queueSortable" ).sortable( {	
     	"axis": "y",
     	opacity: 0.5,
     	containment: "parent",
@@ -54,7 +56,7 @@ $(function() {
     		})
     	},
     });
-    $( "#sortable" ).disableSelection();
+    $( "#queueSortable" ).disableSelection();
  });
 
 function updateID(){
@@ -149,70 +151,14 @@ function clearQueue(){
 	});
 };
 
-function playListSel(event, ui){
-	listInd = ui.item.index;
-	if(currentLength>0){
-		var response = confirm("New queue would be loaded. Clear current queue?");
-		if(response){
-			clearQueue();
-		}
-	}
-	$( "#playlists" ).selectmenu({select:playListSel});	
-	chrome.runtime.sendMessage({
-		"type":"listSel",
-		"index":listInd
-	})
-}
-
-
-function login(){
-	chrome.runtime.sendMessage({
-				type:"login"
-			});
-};
-
-function updateLoginSpan(){
-	back = chrome.extension.getBackgroundPage();
-	if(back.loggedIn){		
-		listInd = back.listIndex;
-		listList = back.listList;
-		
-		var text = "<select name=\"speed\" id=\"playlists\" style=\"width: 158px\">"+
-	      			"<optgroup label=\"Your playlists\" id=\"listNames\">"
-		for (var i=0; i<listList.length; i++){
-			if(listInd==i){
-				//window.alert(listInd)
-				text=text+"<option selected=\"selected\">"+listList[i].name+"</option>";
-			}
-			else{
-				text=text+"<option>"+listList[i].name+"</option>";
-			}
-			
-		}
-		text = text + "</optgroup>" + "</select>";	
-		document.getElementById('loginSpan').innerHTML = text;
-		$( "#playlists" ).selectmenu();
-		$( "#playlists" ).selectmenu("refresh");	
-		$( "#playlists" ).selectmenu({select:playListSel});	
-		//window.alert(listInd)
-	}
-	else{
-		document.getElementById('loginSpan').innerHTML = "<button id='loginButton'>YouTube Login</button>";
-		$( "#loginButton" ).button({
-	      text: true,
-    	});
-    	document.getElementById("loginButton").onclick=login;
-	}
-}
 
 function testFunction(){
 	window.alert(listInd);
 }
 
 function loadThings() {
-	updateTable();
-	updateLoginSpan();
-}
+	updateTable()
+;}
 
 function updateTable(){
 	back = chrome.extension.getBackgroundPage();
@@ -234,10 +180,10 @@ function updateTable(){
 		"<div  id=\"listIten\" style=\"width:96%; position:relative; float:left; overflow:hidden; white-space: nowrap; margin: 0px 0px 4px 0px;\">"
 		 + (vidLinks[i].name) + "</div><button class=\"remove\"  style=\"float:right; margin: 6px 0px 0px 0px; visibility:hidden\"></button></li>";
 	}
-	document.getElementById('sortable').innerHTML = table;
+	document.getElementById('queueSortable').innerHTML = table;
 
 	//// Vid Item changes
-	$("li").click(songChosen);
+	$(".vidItem").click(songChosen);
 	$( ".remove" ).button({
       text: "remove",
       icons: {
@@ -255,6 +201,7 @@ function updateTable(){
 
     $(".remove").click(function(){
     	$(this).parent().remove(0);
+    	id = $(this).parent().attr("id");
     	id = $(this).parent().attr("id");
     	//vidLinks.splice(id,1);
     	removeItem(id);
@@ -374,9 +321,6 @@ $(function() {
 chrome.runtime.onMessage.addListener( 
 	function(request,sender,sendResponse){
 		switch(request.type){
-			case "listListUp":
-				updateLoginSpan();
-				break;
 			case "vidLinksUp":
 				updateTable();
 				break;
@@ -384,8 +328,3 @@ chrome.runtime.onMessage.addListener(
 		}
 	}
 )
-
-
-
-//Get the videos:
-//https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PL9425C2A10C2994FF&fields=items(snippet(title%2CresourceId%2FvideoId))%2CnextPageToken&key={YOUR_API_KEY}
