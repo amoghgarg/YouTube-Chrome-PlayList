@@ -159,16 +159,33 @@ chrome.runtime.onMessage.addListener(
 				vidInd=parseInt(request.nowPlay);
 				break;
 			case "login":
-				makeRequest({"type":"auth", "life":2, "first":1});					
+				makeRequest({"type":"auth", "life":2, "first":1});	
+				//window.alert("Logging In")				
 				break;
 			case "listSel":
 				// A list os selected from the playlists. 
 				listIndex = request.index;
 				makeRequest({"type":"getVids","life":2, "nextPageToken":'', "listID":listList[listIndex].id});
 				vidInd = -1;
+				break;
+			case "createNewPlaylist":
+				postRequest({"type":"makeNewPlaylist", "name":request.name});
+				//window.alert("Calling Saving Function")
+				break
+			case "addToPlayList":
+				listIndex = request.id;
+				postRequest({"type":"addToPlayList", "listID":listList[listIndex].id})
+				break
 		}
 	}
 );
+
+function updatePlaylist(listID){
+	for(var i = 0; i<vidLinks.length; i++){
+		window.alert(vidLinks[i].link)
+		postRequest({"type":"addToPlayList", "listID":listID, "resourceId":vidLinks[i].link})
+	}
+}
 
 function updateListList(){
 	makeRequest({"type":"listETag", "life":2});		
@@ -199,8 +216,6 @@ var handle = function(e) {
 
 
 chrome.runtime.onInstalled.addListener(function() {
-
-
     var title = "Add to YouTube Playlist";
     var id = chrome.contextMenus.create({"title": title, "contexts":["link"],
                                          "id": "context" ,
@@ -211,7 +226,40 @@ chrome.runtime.onInstalled.addListener(function() {
  
 });
 
+function postRequest(input){
+	var postData;
+	var url
+	switch(input.type){
+		case "makeNewPlaylist":
+			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&fields=snippet(title%2Cid)&access_token="+authToken;
+			postData = {snippet:{title:input.name}};
+			//window.alert(url)
+			//window.alert(postData)
+			break;
+		case "addToPlayList":
+			url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&fields=snippet(playlistId%2C+resourceId)&access_token="+authToken;
+			window.alert(input.resourceId)
+			postData = {snippet:{playlistId: input.listID, resourceId: {kind: "youtube#video" , videoId: input.resourceId }}};
+			window.alert(postData)
+			break;
+	}
 
+	//window.alert(url)
+	window.alert(JSON.stringify(postData))
+	var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST",url,true);
+    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xmlhttp.send(JSON.stringify(postData));
+    //xmlhttp.send(escape(postData));
+
+	xmlhttp.onreadystatechange=function(){
+		if(xmlhttp.readyState==4){
+			//switch (xmlhttp.status){
+				window.alert(xmlhttp.response)
+			//}
+		}
+	}
+}
 
 function makeRequest(input){
 
