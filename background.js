@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener(
 				if(!pageExists && vidLinks.length>0){
 					vidInd = 0;
 					chrome.tabs.create({
-						url:vidLinks[0].link,
+						url:"https://www.youtube.com/watch?v="+vidLinks[0].link,
 						active:false,					
 						},  tabCreated );
 					pageExists = true;
@@ -53,7 +53,7 @@ chrome.runtime.onMessage.addListener(
 					vidInd=0;
 				}
 				chrome.tabs.update(tabId,{
-					url:vidLinks[vidInd].link,
+					url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 					active:false,
 				});
 				chrome.browserAction.setIcon({path:"iconCol.png"});
@@ -71,7 +71,7 @@ chrome.runtime.onMessage.addListener(
 					vidInd=0;
 				}
 				chrome.tabs.update(tabId,{
-					url:vidLinks[vidInd].link,
+					url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 					active:false,
 				});
 				break;
@@ -81,7 +81,7 @@ chrome.runtime.onMessage.addListener(
 					vidInd=vidLinks.length-1;
 				}
 				chrome.tabs.update(tabId,{
-					url:vidLinks[vidInd].link,
+					url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 					active:false,
 				});
 				break;
@@ -89,7 +89,7 @@ chrome.runtime.onMessage.addListener(
 				vidInd=request.newInd;
 				if(!pageExists && vidLinks.length>0){
 					chrome.tabs.create({
-						url:vidLinks[vidInd].link,
+						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 						active:false,					
 						},  tabCreated );
 					pageExists = true;
@@ -98,7 +98,7 @@ chrome.runtime.onMessage.addListener(
 				}
 				else{
 					chrome.tabs.update(tabId,{
-						url:vidLinks[vidInd].link,
+						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 						active:false,
 					});
 				}			
@@ -123,20 +123,18 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case "removeItem":
 				id = request.id;
+				window.alert("removing from vidLinks background, id " + id)
 				vidLinks.splice(id,1);
 				if(id==vidInd){
 					vidInd=(vidInd)%vidLinks.length;
 					chrome.tabs.update(tabId,{
-						url:vidLinks[vidInd].link,
+						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 						active:false,
 					});
 				}
 				if(id<vidInd){
 					vidInd=(vidInd-1)%vidLinks.length;
 				}
-				chrome.runtime.sendMessage({
-					type:"removed",
-				})
 				break;
 			case "listChanged":
 				//Sortable List changed
@@ -174,16 +172,48 @@ chrome.runtime.onMessage.addListener(
 				break
 			case "addToPlayList":
 				listIndex = request.id;
-				postRequest({"type":"addToPlayList", "listID":listList[listIndex].id})
+				//window.alert("Update Youtube playlist message recieved by BackGround")
+				updatePlaylist(listList[listIndex].id)
 				break
+			case "delPlaylist":
+				//window.alert("del playlist message received, removing: "+listList[request.index].id);
+				delRequest({"type":"delList", "listID":listList[request.index].id, "arrayID":request.index})
 		}
 	}
 );
 
-function updatePlaylist(listID){
-	for(var i = 0; i<vidLinks.length; i++){
-		window.alert(vidLinks[i].link)
-		postRequest({"type":"addToPlayList", "listID":listID, "resourceId":vidLinks[i].link})
+function delRequest(input){
+	var url;
+
+	switch(input.type){
+		case  "delList":
+			listID = input.listID;
+			url = "https://www.googleapis.com/youtube/v3/playlists?id="+listID+"&access_token="+authToken;
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("DELETE",url,true);
+			xmlhttp.send();
+				xmlhttp.onreadystatechange=function(){
+				if(xmlhttp.readyState==4){
+					//switch (xmlhttp.status){
+					//	case 200:
+							//window.alert("Playlist Deleted");
+							listList.splice(input.arrayID,1);
+							chrome.runtime.sendMessage({
+								"type":"playListDeltd",
+								"id" : input.arrayID
+							})
+					//	break;
+					//}
+				}
+			}
+		break;	
+	}
+}
+
+function updatePlaylist(ytListID){
+	vidCount = vidLinks.length;
+	for(var i = 0; i<vidCount; i++){
+		postRequest({"type":"addToPlayList", "listID":ytListID, "resourceId":vidLinks[i].link, "count":vidCount-i})
 	}
 }
 
@@ -191,10 +221,18 @@ function updateListList(){
 	makeRequest({"type":"listETag", "life":2});		
 };
 
-var handle = function(e) {	
-
+var handle = function(e) {
 	var urlink = e.linkUrl;
-	var name; 
+
+	var video_id = urlink.split('v=')[1];
+	var ampersandPosition = video_id.indexOf('&');
+	if(ampersandPosition != -1) {
+	  video_id = video_id.substring(0, ampersandPosition);
+	}
+
+	//window.alert("Adding Id" + video_id)
+
+	var name;
 
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", e.linkUrl, true);
@@ -206,7 +244,7 @@ var handle = function(e) {
 			name = temp.getElementsByTagName('title');
 			name = name[0].text;
 			var toAdd = {
-				"link" : urlink,
+				"link" : video_id,
 				"name" : name
 			};
 			vidLinks.push(toAdd);
@@ -216,11 +254,11 @@ var handle = function(e) {
 
 
 chrome.runtime.onInstalled.addListener(function() {
-    var title = "Add to YouTube Playlist";
+    var title = "Add to YouTube Queue";
     var id = chrome.contextMenus.create({"title": title, "contexts":["link"],
                                          "id": "context" ,
 										 "onclick" : handle,
-										 "targetUrlPatterns": ["https://*.youtube.com/*"]										 
+										 "targetUrlPatterns": ["https://*.youtube.com/watch?v=*"]										 
 										 }
 									    );
  
@@ -231,35 +269,54 @@ function postRequest(input){
 	var url
 	switch(input.type){
 		case "makeNewPlaylist":
-			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&fields=snippet(title%2Cid)&access_token="+authToken;
+			url = "https://www.googleapis.com/youtube/v3/playlists?part=id%2Csnippet&fields=id%2Csnippet(title)&access_token="+authToken;
 			postData = {snippet:{title:input.name}};
 			//window.alert(url)
 			//window.alert(postData)
 			break;
 		case "addToPlayList":
+			//window.alert("PostRequest function ID of updateing playlist"+input.listID)
 			url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&fields=snippet(playlistId%2C+resourceId)&access_token="+authToken;
-			window.alert(input.resourceId)
+			//window.alert(input.resourceId)
 			postData = {snippet:{playlistId: input.listID, resourceId: {kind: "youtube#video" , videoId: input.resourceId }}};
-			window.alert(postData)
+			//window.alert(postData)
 			break;
 	}
 
-	//window.alert(url)
-	window.alert(JSON.stringify(postData))
+	//window.alert(JSON.stringify(postData))
 	var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST",url,true);
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	xmlhttp.send(JSON.stringify(postData));
-    //xmlhttp.send(escape(postData));
 
 	xmlhttp.onreadystatechange=function(){
 		if(xmlhttp.readyState==4){
-			//switch (xmlhttp.status){
-				window.alert(xmlhttp.response)
-			//}
+			switch (xmlhttp.status){
+			case 401:
+				break;
+			case 400:
+				break;
+			case 200:
+				//window.alert(xmlhttp.response)
+				switch(input.type){
+					case "makeNewPlaylist":
+						parseCreatePlaylistJSON(xmlhttp.response)
+						break
+					case "addToPlayList":
+						if(input.count==1){
+							chrome.runtime.sendMessage({
+								type:"listUpdated"
+							})
+						}
+						break
+				}
+				break;
+			default:
+				return 0;
+			}
 		}
 	}
-}
+}	
 
 function makeRequest(input){
 
@@ -298,7 +355,7 @@ function makeRequest(input){
 			break;
 		case "getVids":
 			url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId="
-			url = url + input.listID + "&fields=items(snippet(title%2CresourceId%2FvideoId))%2CnextPageToken&access_token="+authToken;
+			url = url + input.listID + "&fields=items(snippet(title%2CresourceId))%2CnextPageToken&access_token="+authToken;
 			break;
 		case "listETag":
 			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&fields=etag&access_token="+authToken;
@@ -351,23 +408,39 @@ function makeRequest(input){
 	}
 }
 
+function parseCreatePlaylistJSON(input){
+	var obj = $.parseJSON(input);
+	var temp = {
+		"id" : obj.id,
+		"name" : obj.snippet.title
+	}	
+	listList.unshift(temp);
+	chrome.runtime.sendMessage({
+		type:"listListUp"
+	});
+	updatePlaylist(obj.id)
+}
+
+
 function parseVidListJSON(input){
 	
 	var obj = $.parseJSON(input);
 	for (var i = 0; i<obj.items.length; i++){
-		vidLinks.push({			
-			"link" : "https://www.youtube.com/watch?v="+obj.items[i].snippet.resourceId.videoId,
-			"name" : obj.items[i].snippet.title
-		});
+		// window.alert(obj.items[i].snippet.resourceId.kind)
+		// window.alert(obj.items[i].snippet.resourceId.videoId)
+		if(obj.items[i].snippet.resourceId.kind=="youtube#video"){
+			vidLinks.push({			
+				"link" : obj.items[i].snippet.resourceId.videoId,
+				"name" : obj.items[i].snippet.title
+			});
+		}
 	}
 	if(obj.nextPageToken){
 		makeRequest({"type":"getLists","life":2,"nextPageToken":obj.nextPageToken})
 	}
-	else{
-		chrome.runtime.sendMessage({
+	chrome.runtime.sendMessage({
 		type:"vidLinksUp"}
-		);
-	}
+	);
 }
 
 function parseListJSON(input){
