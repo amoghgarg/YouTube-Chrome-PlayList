@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
   <script src="jquery-1.10.2.js"></script>
   <script src="jquery-ui.js"></script>
+  <script src="loaderAnim.js"></script>
   <link rel="stylesheet" href="style.css">
   <style>
   #sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
@@ -39,27 +40,31 @@
           <li><a href="#tabPlaylist">Playlists</a></li>
           <li><a href="#tabQueue">Queue</a></li>
         </ul>
+
+
         <div id="tabQueue">
+            
             <span id="loginSpan">
             </span>
                
-            <div style="margin: 0 0px 0px 0px;   float:right">
-              
+            <div id="queueWaitDiv"><span id="queueWaitText"></span></div>
+            <div style="margin-left: 83px">
               <button id="saveButton">Save</button>
               <button id="clear">Clear</button>
               <input type="checkbox" id="shuffle"><label for="shuffle">Shuffle</label>
               <button id="rewind">prev</button>
               <button id="forward">next</button>
-              <button id="play">play</button>
+              <button id="play">play</button>   
+              
             </div>
-          
-            <div style-"float:bottom">
-              <ul id="queueSortable">
-              </ul>
-            </div>
+
+            <ul id="queueSortable" >
+            </ul>
             
       </div>
       <div id="tabPlaylist">
+        <div id="playlistWaitDiv"><span id="plWaitText"><span></div>
+        <div id="tabPlaylistContent"></div>
       </div>
   </div>  
 </body>

@@ -1,6 +1,7 @@
 var loggedIn = -1;
 var listList = [];
 var listInd = -1;
+var cl;
 
 $(function(){
 	updateLoginSpan();
@@ -10,7 +11,36 @@ function login(){
 	chrome.runtime.sendMessage({
 		type:"login"
 	});
+	showWaitPL({type:"logging"})
 };
+
+function hideWaitPL(){
+	playlistWaitLoop.hide();
+	document.getElementById("plWaitText").innerHTML = "";
+}
+
+function showWaitPL(input){
+	playlistWaitLoop.show();
+	switch(input.type){
+		case "logging":
+			text = "Logging In...";
+			break;
+		case "deleting":
+			text = "Deleting playlist...";
+			break
+		case "loading":
+			text = "Loading your playlists..."
+			break;
+		case "creating":
+			text = "Creating New playlist...";
+			break;
+		case "updating":
+			text = "Updating playlist...";
+			break;
+	}
+
+	document.getElementById("plWaitText").innerHTML = text;
+}
 
 function updateLoginSpan(){
 	back = chrome.extension.getBackgroundPage();
@@ -32,10 +62,10 @@ function updateLoginSpan(){
 		}
              
 		for (var i=0; i<listList.length; i++){
-			text=text+"<li id=\""+i+"\" class=\"listItem ui-state-default\" style=\"overflow:hidden\" >"+listList[i].name+"<button class=\"delPlay\"  style=\"float:right; margin: 6px 0px 0px 0px; visibility:hidden;\"></li>";
+			text=text+"<li id=\""+i+"\" class=\"listItem ui-state-default\" style=\"overflow:hidden; margin-left:-45px\" >"+listList[i].name+"<button class=\"delPlay\"  style=\"float:right; margin: 6px 0px 0px 0px; visibility:hidden;\"></li>";
 		}
 		text = text + "</ul></div>"
-		document.getElementById('tabPlaylist').innerHTML = text;
+		document.getElementById('tabPlaylistContent').innerHTML = text;
     	$( "#playlistList" ).disableSelection();
     	$(".listItem").click(playListSel);
     	$("#saveButton").button()
@@ -75,7 +105,7 @@ function updateLoginSpan(){
 	    });
 	}
 	else{
-		document.getElementById('tabPlaylist').innerHTML = "<button id='loginButton'>YouTube Login</button>";
+		document.getElementById('tabPlaylistContent').innerHTML = "<button id='loginButton'>YouTube Login</button>";
 		$( "#loginButton" ).button({
 	      text: true,
     	});
@@ -85,6 +115,7 @@ function updateLoginSpan(){
 
 
 function delPlaylist(id){
+	showWaitPL({type:"deleting"})
 	chrome.runtime.sendMessage({
 		"type":"delPlaylist",
 		"index":id
@@ -96,16 +127,25 @@ chrome.runtime.onMessage.addListener(
 		switch(request.type){
 			case "listListUp":
 				updateLoginSpan();
+				if(!request.status){
+					hideWaitPL();
+				}
 				if(currentLength>0){
 					$("#saveButton")[0].style.visibility = "visible";
 				}
 				break;
 			case "playListDeltd":				
 				updateLoginSpan();
+				hideWaitPL();
 				break;
 			case "listUpdated":
-				window.alert("Updated the list.")
+				//window.alert("Updated the list.")
+				hideWaitPL();
 				updateLoginSpan();
+				break;
+			case "loadingLists":
+				showWaitPL({type:"loading"});
+				break
 
 		}
 	}
@@ -125,6 +165,7 @@ function playListSel(event, ui){
 		"type":"listSel",
 		"index":listInd
 	})
+	showWaitQ({type:"loading"})
 	$( "#tabs" ).tabs({"active":1});
 }
 
@@ -135,6 +176,7 @@ function addToPlaylist(event, ui){
 		type:"addToPlayList",
 		id:temp
 	});
+	showWaitPL({type:"updating"})
 	$(".listItem").unbind("click")
 	$(".listItem").click(playListSel);
 }
@@ -143,9 +185,10 @@ function saveQueue(){
 	$( "#tabs" ).tabs({"active":0});
 	var text = "Create new playlist: <input type=\"text\" id=\"playListName\" >";
 	text = text + "<button id=\"newPlaylistButton\">Create</button>"
+	text = text + "<button id=\"cancelSaveButton\">Cancel</button>"
 	text = text +"OR<br> Add to:";
 	document.getElementById("saveDiv").innerHTML = text;
-
+	$("#cancelSaveButton").click(updateLoginSpan)
 	$("#playListName").focus();
 	$("#newPlaylistButton").click(createNewPlaylist);
 	$(".listItem").unbind("click");
@@ -159,10 +202,11 @@ function saveQueue(){
 function createNewPlaylist(){
 	var name = document.getElementById("playListName").value;
 	if(name.length<1){
-		//window.alert("Please Enter a Name or Select an existing playlist");
+		window.alert("Please Enter a Name or Select an existing playlist");
 	}
 	else{
 		//window.alert(name);
+		showWaitPL("creating")
 		chrome.runtime.sendMessage({
 			type:"createNewPlaylist",
 			"name":name

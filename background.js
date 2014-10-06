@@ -123,7 +123,7 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case "removeItem":
 				id = request.id;
-				window.alert("removing from vidLinks background, id " + id)
+				//window.alert("removing from vidLinks background, id " + id)
 				vidLinks.splice(id,1);
 				if(id==vidInd){
 					vidInd=(vidInd)%vidLinks.length;
@@ -212,8 +212,10 @@ function delRequest(input){
 
 function updatePlaylist(ytListID){
 	vidCount = vidLinks.length;
+	//window.alert("Number of videos in vidLinks: "+vidCount)
 	for(var i = 0; i<vidCount; i++){
-		postRequest({"type":"addToPlayList", "listID":ytListID, "resourceId":vidLinks[i].link, "count":vidCount-i})
+		temp = vidLinks[i]
+		postRequest({"type":"addToPlayList", "listID":ytListID, "resourceId":temp.link, "count":vidCount-i})
 	}
 }
 
@@ -291,6 +293,7 @@ function postRequest(input){
 
 	xmlhttp.onreadystatechange=function(){
 		if(xmlhttp.readyState==4){
+			console.log("response: " + xmlhttp.status)
 			switch (xmlhttp.status){
 			case 401:
 				break;
@@ -303,6 +306,7 @@ function postRequest(input){
 						parseCreatePlaylistJSON(xmlhttp.response)
 						break
 					case "addToPlayList":
+						console.log(input.count + xmlhttp.response)
 						if(input.count==1){
 							chrome.runtime.sendMessage({
 								type:"listUpdated"
@@ -341,6 +345,9 @@ function makeRequest(input){
 					loggedIn = true;
 					if(firstAuth){
 						updateListList();
+						chrome.runtime.sendMessage({
+							type:"loadingLists"
+						})
 					}
 				}
 			})
@@ -416,7 +423,8 @@ function parseCreatePlaylistJSON(input){
 	}	
 	listList.unshift(temp);
 	chrome.runtime.sendMessage({
-		type:"listListUp"
+		type:"listListUp",
+		status:0
 	});
 	updatePlaylist(obj.id)
 }
@@ -435,12 +443,15 @@ function parseVidListJSON(input){
 			});
 		}
 	}
+	var waiting = 0;
 	if(obj.nextPageToken){
-		makeRequest({"type":"getLists","life":2,"nextPageToken":obj.nextPageToken})
+		makeRequest({"type":"getVids","life":2,"nextPageToken":obj.nextPageToken})
+		waiting = 1;
 	}
 	chrome.runtime.sendMessage({
-		type:"vidLinksUp"}
-	);
+		type:"vidLinksUp",
+		status:waiting
+	});
 }
 
 function parseListJSON(input){
@@ -449,14 +460,15 @@ function parseListJSON(input){
 		listList.push({"id":obj.items[i].id,'name':obj.items[i].snippet.title});
 	}
 	
+	var waiting = 0;
 	if(obj.nextPageToken){
 		makeRequest({"type":"getLists","life":2,"nextPageToken":obj.nextPageToken})
+		waiting = 1;
 	}
-	else{
-		chrome.runtime.sendMessage({
-		type:"listListUp"}
-		);
-	}
+	chrome.runtime.sendMessage({
+		type:"listListUp",
+		status:waiting
+	});
 }
 
 function playlistClicked(event,ui){

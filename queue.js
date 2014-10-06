@@ -15,6 +15,22 @@ var noticeText = "No songs in the queue. Add a new playlist from the Playlists t
 // 	window.alert(text)
 // }
 
+function hideWaitQ(){
+	queueWaitLoop.hide();
+	document.getElementById("queueWaitText").innerHTML = "";
+}
+
+function showWaitQ(input){
+	queueWaitLoop.show();
+	switch(input.type){
+		case "loading":
+			text = "Loading...";
+			break;
+	}
+
+	document.getElementById("queueWaitText").innerHTML = text;
+}
+
 function playClicked(){
 
 	if(currentLength>0){
@@ -201,7 +217,7 @@ function updateTable(){
 	//ui-state-default
 
 	for (i = 0; i < currentLength; i++) {
-		table += "<li id = \"" +i +"\" style=\"overflow:hidden\" class=\"vidItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\" style=\"float:left\"></span>"+
+		table += "<li id = \"" +i +"\" style=\"overflow:hidden; margin-left:-45px\" class=\"vidItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\" style=\"float:left\"></span>"+
 		"<div style=\"width:96%; position:relative; float:left; overflow:hidden; white-space: nowrap; margin: 0px 0px 4px 0px;\">"
 		 + (vidLinks[i].name) + "</div><button class=\"remove\"  style=\"float:right; margin: 6px 0px 0px 0px; visibility:hidden\"></button></li>";
 	}
@@ -349,7 +365,10 @@ $(function() {
 chrome.runtime.onMessage.addListener( 
 	function(request,sender,sendResponse){
 		switch(request.type){
-			case "vidLinksUp":	
+			case "vidLinksUp":
+				if(!request.status){
+					hideWaitQ();
+				}	
 				updateTable();
 				break;
 		}
