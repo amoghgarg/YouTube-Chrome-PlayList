@@ -62,7 +62,7 @@ function updateLoginSpan(){
 		}
              
 		for (var i=0; i<listList.length; i++){
-			text=text+"<li id=\""+i+"\" class=\"listItem ui-state-default\" style=\"overflow:hidden; margin-left:-45px\" >"+listList[i].name+"<button class=\"delPlay\"  style=\"float:right; margin: 6px 0px 0px 0px; visibility:hidden;\"></li>";
+			text=text+"<li id=\""+i+"\" class=\"listItem ui-state-default\" style=\"overflow:hidden; margin-left:-45px; cursor:pointer\" >"+listList[i].name+"<button class=\"delPlay\"  style=\"float:right; margin: 6px 0px 0px 0px; visibility:hidden;\"></li>";
 		}
 		text = text + "</ul></div>"
 		document.getElementById('tabPlaylistContent').innerHTML = text;

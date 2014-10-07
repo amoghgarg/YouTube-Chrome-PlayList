@@ -20,6 +20,7 @@
 <script src="begin.js"></script>
 <script src="queue.js"></script>
 <script src="playlist.js"></script>
+<script src="search.js"></script>
 
 <head>
     <style>
@@ -39,6 +40,7 @@
         <ul>
           <li><a href="#tabPlaylist">Playlists</a></li>
           <li><a href="#tabQueue">Queue</a></li>
+          <li><a href="#tabSearch">Search</a></li>
         </ul>
 
 
@@ -54,8 +56,7 @@
               <input type="checkbox" id="shuffle"><label for="shuffle">Shuffle</label>
               <button id="rewind">prev</button>
               <button id="forward">next</button>
-              <button id="play">play</button>   
-              
+              <button id="play">play</button>                 
             </div>
 
             <ul id="queueSortable" >
@@ -65,6 +66,15 @@
       <div id="tabPlaylist">
         <div id="playlistWaitDiv"><span id="plWaitText"><span></div>
         <div id="tabPlaylistContent"></div>
+      </div>
+
+      <div id="tabSearch">
+        <input type="text" id="inputSearch">
+        <button id="butSearch">Search</button>
+        <div id="searchWaitDiv"><span id="searchWaitText"></span></div>
+        <br>
+        <div id='searchTop'></div>
+        <div id='resultsDisp'></div>
       </div>
   </div>  
 </body>

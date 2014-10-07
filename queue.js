@@ -217,7 +217,7 @@ function updateTable(){
 	//ui-state-default
 
 	for (i = 0; i < currentLength; i++) {
-		table += "<li id = \"" +i +"\" style=\"overflow:hidden; margin-left:-45px\" class=\"vidItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\" style=\"float:left\"></span>"+
+		table += "<li id = \"" +i +"\" style=\"overflow:hidden; cursor:pointer; margin-left:-45px\" class=\"vidItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\" style=\"float:left\"></span>"+
 		"<div style=\"width:96%; position:relative; float:left; overflow:hidden; white-space: nowrap; margin: 0px 0px 4px 0px;\">"
 		 + (vidLinks[i].name) + "</div><button class=\"remove\"  style=\"float:right; margin: 6px 0px 0px 0px; visibility:hidden\"></button></li>";
 	}
@@ -309,7 +309,7 @@ function songChosen(){
 	if(canChange){
 		clicked = ($(this).attr('id'));
 			   
-		if(clicked!=nowPlay){
+		if(clicked!=nowPlay | (clicked==nowPlay & !chrome.extension.getBackgroundPage().playing) ){
 			$("#"+nowPlay).removeClass('ui-state-active');
 			$("#"+nowPlay).addClass('ui-state-default');
 			$("#"+clicked).addClass('ui-state-active');

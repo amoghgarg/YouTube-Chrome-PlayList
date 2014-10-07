@@ -8,6 +8,7 @@ var listList = [];
 var listListETag = '';
 var listIndex = -1;
 var loggedIn = false;
+var appID = "oldagkdddpneeopaofiflfdidknmhgbb"
 
 
 function tabCreated(tab){
@@ -20,7 +21,7 @@ function tabClosed(tabIdin, info){
 	if(tabIdin == tabId){
 		playing = false;
 		pageExists = false;
-		chrome.browserAction.setIcon({path:"icon.png"});
+		chrome.browserAction.setIcon({path:"iconBw.png"});
 	}
 }
 
@@ -123,7 +124,6 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case "removeItem":
 				id = request.id;
-				//window.alert("removing from vidLinks background, id " + id)
 				vidLinks.splice(id,1);
 				if(id==vidInd){
 					vidInd=(vidInd)%vidLinks.length;
@@ -158,26 +158,36 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case "login":
 				makeRequest({"type":"auth", "life":2, "first":1});	
-				//window.alert("Logging In")				
 				break;
 			case "listSel":
-				// A list os selected from the playlists. 
 				listIndex = request.index;
 				makeRequest({"type":"getVids","life":2, "nextPageToken":'', "listID":listList[listIndex].id});
 				vidInd = -1;
 				break;
 			case "createNewPlaylist":
 				postRequest({"type":"makeNewPlaylist", "name":request.name});
-				//window.alert("Calling Saving Function")
 				break
 			case "addToPlayList":
 				listIndex = request.id;
-				//window.alert("Update Youtube playlist message recieved by BackGround")
 				updatePlaylist(listList[listIndex].id)
 				break
 			case "delPlaylist":
-				//window.alert("del playlist message received, removing: "+listList[request.index].id);
 				delRequest({"type":"delList", "listID":listList[request.index].id, "arrayID":request.index})
+				break
+			case "searchQuery":
+				makeRequest({"type":"searchQuery", "life":2, "query":request.text})
+				break
+			case "searchRelated":
+				makeRequest({"type":"searchRelated", "life":2})
+				break;
+			case "addVideo":
+				var toAdd = {
+					"link" : request.link,
+					"name" : request.name
+				};
+				vidLinks.push(toAdd);
+				chrome.runtime.sendMessage({type:"vidLinksUp", status:0})
+				break;
 		}
 	}
 );
@@ -194,16 +204,11 @@ function delRequest(input){
 			xmlhttp.send();
 				xmlhttp.onreadystatechange=function(){
 				if(xmlhttp.readyState==4){
-					//switch (xmlhttp.status){
-					//	case 200:
-							//window.alert("Playlist Deleted");
 							listList.splice(input.arrayID,1);
 							chrome.runtime.sendMessage({
 								"type":"playListDeltd",
 								"id" : input.arrayID
 							})
-					//	break;
-					//}
 				}
 			}
 		break;	
@@ -212,7 +217,6 @@ function delRequest(input){
 
 function updatePlaylist(ytListID){
 	vidCount = vidLinks.length;
-	//window.alert("Number of videos in vidLinks: "+vidCount)
 	for(var i = 0; i<vidCount; i++){
 		temp = vidLinks[i]
 		postRequest({"type":"addToPlayList", "listID":ytListID, "resourceId":temp.link, "count":vidCount-i})
@@ -232,7 +236,7 @@ var handle = function(e) {
 	  video_id = video_id.substring(0, ampersandPosition);
 	}
 
-	//window.alert("Adding Id" + video_id)
+
 
 	var name;
 
@@ -273,19 +277,12 @@ function postRequest(input){
 		case "makeNewPlaylist":
 			url = "https://www.googleapis.com/youtube/v3/playlists?part=id%2Csnippet&fields=id%2Csnippet(title)&access_token="+authToken;
 			postData = {snippet:{title:input.name}};
-			//window.alert(url)
-			//window.alert(postData)
 			break;
 		case "addToPlayList":
-			//window.alert("PostRequest function ID of updateing playlist"+input.listID)
 			url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&fields=snippet(playlistId%2C+resourceId)&access_token="+authToken;
-			//window.alert(input.resourceId)
 			postData = {snippet:{playlistId: input.listID, resourceId: {kind: "youtube#video" , videoId: input.resourceId }}};
-			//window.alert(postData)
 			break;
 	}
-
-	//window.alert(JSON.stringify(postData))
 	var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST",url,true);
     xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -300,7 +297,6 @@ function postRequest(input){
 			case 400:
 				break;
 			case 200:
-				//window.alert(xmlhttp.response)
 				switch(input.type){
 					case "makeNewPlaylist":
 						parseCreatePlaylistJSON(xmlhttp.response)
@@ -367,6 +363,16 @@ function makeRequest(input){
 		case "listETag":
 			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&fields=etag&access_token="+authToken;
 			break;
+		case "searchQuery":
+			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q="
+			url = url + encodeURIComponent(input.query);
+			url = url + "&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))&access_token="+authToken;
+			break;
+		case "searchRelated":
+			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId="
+			url = url + vidLinks[vidInd].link
+			url = url + "&type=video&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))&access_token="+authToken;
+			break;
 	}
 
 	var xmlhttp = new XMLHttpRequest();
@@ -408,11 +414,37 @@ function makeRequest(input){
 								makeRequest( {"type":"getLists","life":2, "nextPageToken":''} );
 							}
 							break;
+						case "searchQuery":
+							parseSearchJSON({"type":"query", "text":xmlhttp.response});
+							break;
+						case "searchRelated":
+							parseSearchJSON({"type":"related", "text":xmlhttp.response});
+							break;
 					}
 					break;
 			}
 		}		
 	}
+}
+
+
+function parseSearchJSON(input){
+	
+	var obj = $.parseJSON(input.text);
+	var searchResults=[];
+	for (var i = 0; i<obj.items.length; i++){
+		if(obj.items[i].id.kind=="youtube#video"){
+			searchResults.push({			
+				"link" : obj.items[i].id.videoId,
+				"name" : obj.items[i].snippet.title,
+				"thumbNail" : obj.items[i].snippet.thumbnails.default.url
+			});
+		}
+	}
+	chrome.runtime.sendMessage({
+		type:input.type+"ResUp",
+		results:searchResults
+	})
 }
 
 function parseCreatePlaylistJSON(input){
@@ -434,8 +466,6 @@ function parseVidListJSON(input){
 	
 	var obj = $.parseJSON(input);
 	for (var i = 0; i<obj.items.length; i++){
-		// window.alert(obj.items[i].snippet.resourceId.kind)
-		// window.alert(obj.items[i].snippet.resourceId.videoId)
 		if(obj.items[i].snippet.resourceId.kind=="youtube#video"){
 			vidLinks.push({			
 				"link" : obj.items[i].snippet.resourceId.videoId,
