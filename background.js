@@ -9,13 +9,21 @@ var listListETag = '';
 var listIndex = -1;
 var loggedIn = false;
 var appID = "oldagkdddpneeopaofiflfdidknmhgbb"
+var searchNextPageToken;
+var publicKey = "AIzaSyAz5ndOWI74hpgbrC9IZJmx-YxyLehdgl0";
+var lastVideoID
+var lastQuerry
+var shuffle
 
 
 function tabCreated(tab){
 	tabId = tab.id;
+	chrome.tabs.executeScript(tab.id, {file:"inject.js"})
 };
 
 chrome.tabs.onRemoved.addListener(tabClosed);
+makeRequest({"type":"auth", "life":2, "first":1});	
+
 
 function tabClosed(tabIdin, info){
 	if(tabIdin == tabId){
@@ -53,10 +61,19 @@ chrome.runtime.onMessage.addListener(
 				if(vidInd==vidLinks.length){
 					vidInd=0;
 				}
+				if(shuffle){
+					vidInd = Math.floor((Math.random() * vidLinks.length));
+				}
+				chrome.runtime.sendMessage({
+					type:"changedToNextSong",
+					id:vidInd
+				})
 				chrome.tabs.update(tabId,{
 					url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 					active:false,
 				});
+				chrome.browserAction.setIcon({path:"iconCol.png"});
+				chrome.tabs.executeScript(tabId, {file:"inject.js"})
 				chrome.browserAction.setIcon({path:"iconCol.png"});
 				break;	
 			case "pauseClicked":
@@ -71,11 +88,23 @@ chrome.runtime.onMessage.addListener(
 				if(vidInd==vidLinks.length){
 					vidInd=0;
 				}
+				if(shuffle){
+					vidInd = Math.floor((Math.random() * vidLinks.length));
+				}
+				chrome.runtime.sendMessage({
+					type:"changedToNextSong",
+					id:vidInd
+				})
 				chrome.tabs.update(tabId,{
 					url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 					active:false,
 				});
+				chrome.tabs.executeScript(tabId, {file:"inject.js"})
+				chrome.browserAction.setIcon({path:"iconCol.png"});
 				break;
+			case "shuffle":
+				shuffle = request.shuffle;
+				break
 			case "prevClicked":
 				vidInd--;
 				if(vidInd==-1){
@@ -85,6 +114,8 @@ chrome.runtime.onMessage.addListener(
 					url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 					active:false,
 				});
+				chrome.tabs.executeScript(tabId, {file:"inject.js"})
+				chrome.browserAction.setIcon({path:"iconCol.png"});
 				break;
 			case "songChanged":
 				vidInd=request.newInd;
@@ -102,7 +133,9 @@ chrome.runtime.onMessage.addListener(
 						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 						active:false,
 					});
+					chrome.tabs.executeScript(tabId, {file:"inject.js"})
 				}			
+				chrome.browserAction.setIcon({path:"iconCol.png"});
 				break;	
 			case "clear":
 				vidLinks=[];
@@ -131,6 +164,7 @@ chrome.runtime.onMessage.addListener(
 						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 						active:false,
 					});
+					chrome.tabs.executeScript(tabId, {file:"inject.js"})
 				}
 				if(id<vidInd){
 					vidInd=(vidInd-1)%vidLinks.length;
@@ -179,6 +213,9 @@ chrome.runtime.onMessage.addListener(
 				break
 			case "searchRelated":
 				makeRequest({"type":"searchRelated", "life":2})
+				break;
+			case "searchQueryonScroll":
+				makeRequest({"type":"searchQueryonScroll", "nextType":request.nextType})
 				break;
 			case "addVideo":
 				var toAdd = {
@@ -324,10 +361,6 @@ function makeRequest(input){
 	var url;
 
 	if (input.life<0) return;
-	if(authToken=='' & input.type!="auth") {
-		makeRequest({"type":"auth", "life":input.life});		
-		return;
-	}
 
 	switch (input.type){
 		case "auth":
@@ -350,6 +383,10 @@ function makeRequest(input){
 			return 0;
 			break;
 		case "getLists":
+			if(authToken=='') {
+				makeRequest({"type":"auth", "life":input.life});		
+				return;
+			}
 			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&";
 			if(input.nextPageToken!=''){
 				url = url+"pageToken="+input.nextPageToken;
@@ -357,21 +394,42 @@ function makeRequest(input){
 			url = url + "&fields=items(id%2Csnippet%2Ftitle)%2CnextPageToken&access_token="+authToken;
 			break;
 		case "getVids":
+			if(authToken=='') {
+				makeRequest({"type":"auth", "life":input.life});		
+				return;
+			}
 			url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId="
 			url = url + input.listID + "&fields=items(snippet(title%2CresourceId))%2CnextPageToken&access_token="+authToken;
 			break;
 		case "listETag":
+			if(authToken=='') {
+				makeRequest({"type":"auth", "life":input.life});		
+				return;
+			}
 			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&fields=etag&access_token="+authToken;
 			break;
 		case "searchQuery":
 			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q="
 			url = url + encodeURIComponent(input.query);
-			url = url + "&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))&access_token="+authToken;
+			lastQuerry = encodeURIComponent(input.query);
+			url = url + "&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))%2CnextPageToken&key="+publicKey;
 			break;
 		case "searchRelated":
 			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId="
 			url = url + vidLinks[vidInd].link
-			url = url + "&type=video&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))&access_token="+authToken;
+			lastVideoID = vidLinks[vidInd].link
+			url = url + "&type=video&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))%2CnextPageToken&key="+publicKey;
+			break;
+		case "searchQueryonScroll":
+			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&pageToken="
+			url = url + searchNextPageToken
+			if(input.nextType=="query"){
+				url = url + "&q=" + lastQuerry;
+			}
+			else if(input.nextType=="related"){
+				url = url + "&relatedToVideoId=" + lastVideoID;
+			}
+			url = url + "&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))%2CnextPageToken&key="+publicKey;
 			break;
 	}
 
@@ -420,6 +478,8 @@ function makeRequest(input){
 						case "searchRelated":
 							parseSearchJSON({"type":"related", "text":xmlhttp.response});
 							break;
+						case "searchQueryonScroll":
+							parseSearchJSON({"type":"scroll", "text":xmlhttp.response})
 					}
 					break;
 			}
@@ -430,7 +490,12 @@ function makeRequest(input){
 
 function parseSearchJSON(input){
 	
+
 	var obj = $.parseJSON(input.text);
+
+	searchNextPageToken = obj.nextPageToken;	
+
+
 	var searchResults=[];
 	for (var i = 0; i<obj.items.length; i++){
 		if(obj.items[i].id.kind=="youtube#video"){

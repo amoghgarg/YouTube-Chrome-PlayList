@@ -131,6 +131,15 @@ function prevClicked(){
 	$("#"+clicked).removeClass('ui-state-default');
 
 	nowPlay = clicked;
+
+	$( "#play" ).button({
+      text: false,
+      icons: {
+      	primary: "ui-icon-pause"
+  	  }
+	});
+		
+	document.getElementById("play").onclick = pauseClicked;
 };
 
 function nextClicked(){
@@ -150,6 +159,15 @@ function nextClicked(){
 	$("#"+clicked).removeClass('ui-state-default');
 
 	nowPlay = clicked;
+
+	$( "#play" ).button({
+      text: false,
+      icons: {
+      	primary: "ui-icon-pause"
+  	  }
+	});
+		
+	document.getElementById("play").onclick = pauseClicked;
 };
 
 
@@ -185,11 +203,19 @@ function loadThings() {
 	updateTable()
 ;}
 
+function shuffleToggled(event, ui){
+	chrome.runtime.sendMessage({
+		type:"shuffle",
+		shuffle:$(this).is(':checked')
+	})
+}
+
 function updateTable(){
 	back = chrome.extension.getBackgroundPage();
 	var vidLinks = back.vidLinks;
 	nowPlay = back.vidInd;
 	currentLength = vidLinks.length;
+	shuffleState = back.shuffle;
 
 	if(back.loggedIn){
 		if(currentLength>0){
@@ -210,6 +236,10 @@ function updateTable(){
 	document.getElementById("forward").onclick=nextClicked;
 	document.getElementById("rewind").onclick=prevClicked;
 	document.getElementById("clear").onclick=clearClicked;
+	document.getElementById("shuffle").checked = shuffleState;
+	$("#shuffle").click(shuffleToggled)
+	$("#shuffle").button()
+
 	//$("#test").click( testFunction);
 
 
@@ -358,7 +388,6 @@ $(function() {
         primary: "ui-icon-seek-next"
       }
     });
-    $( "#shuffle" ).button();
   });
 
 
@@ -370,6 +399,14 @@ chrome.runtime.onMessage.addListener(
 					hideWaitQ();
 				}	
 				updateTable();
+				break;
+			case "changedToNextSong":
+				var clicked = request.id
+				$("#"+nowPlay).removeClass('ui-state-active');
+				$("#"+nowPlay).addClass('ui-state-default');
+				$("#"+clicked).addClass('ui-state-active');
+				$("#"+clicked).removeClass('ui-state-default');
+				nowPlay = clicked;
 				break;
 		}
 	}

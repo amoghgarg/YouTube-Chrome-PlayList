@@ -21,6 +21,7 @@ function hideWaitPL(){
 
 function showWaitPL(input){
 	playlistWaitLoop.show();
+	var text = "";
 	switch(input.type){
 		case "logging":
 			text = "Logging In...";
@@ -191,6 +192,15 @@ function saveQueue(){
 	$("#cancelSaveButton").click(updateLoginSpan)
 	$("#playListName").focus();
 	$("#newPlaylistButton").click(createNewPlaylist);
+
+
+	$("#playListName").keyup(function(event){
+	    if(  event.keyCode == 13 & $("#playListName").val().length > 0  ){
+	    	createNewPlaylist();
+    	}
+    });
+
+
 	$(".listItem").unbind("click");
 	$(".listItem").click(addToPlaylist);
 	$(".delPlay").each(function(i){

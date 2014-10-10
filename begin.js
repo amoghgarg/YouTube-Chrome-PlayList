@@ -3,12 +3,13 @@ var playlistWaitLoop;
 var searchWaitLoop
 function tabChanged(event, ui){
 
+	$("#inputSearch").focus();
+
 	if(ui.newPanel.selector=="#tabQueue"){
 		updateLoginSpan()
 	}
 
 	if(ui.newPanel.selector=="#tabSearch"){
-		$("#inputSearch").focus();
 		if(chrome.extension.getBackgroundPage().playing){
 			showWaitSearch({type:"suggested"})
 			chrome.runtime.sendMessage({
