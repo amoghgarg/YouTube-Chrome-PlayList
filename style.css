@@ -26,9 +26,10 @@ hr {
     border-top: 1px solid #ccc;
     margin: 1em 0;
     padding: 0;
-    width: 345px;
+    width: 346px;
     position:relative;
     bottom: 23px;
+    left:2px;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
