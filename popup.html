@@ -3,40 +3,25 @@
 
 <head>
   <meta charset="utf-8">
-  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-  <script src="jquery-1.10.2.js"></script>
-  <script src="jquery-ui.js"></script>
-  <script src="loaderAnim.js"></script>
+  <link rel="stylesheet" href="jquery-ui.css">
+  <script src="js/jquery-1.10.2.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/loaderAnim.js"></script>
+  <script src="js/anim.js"></script>
   <link rel="stylesheet" href="style.css">
-  <style>
-  #sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 15px; overflow:auto;  }
-  #sortable li span { position: absolute; margin-left: -1.3em; }
-  
 
-  </style>
 </head>
 
-<script src="begin.js"></script>
-<script src="queue.js"></script>
-<script src="playlist.js"></script>
-<script src="search.js"></script>
+<script src="js/begin.js"></script>
+<script src="js/queue.js"></script>
+<script src="js/playlist.js"></script>
+<script src="js/search.js"></script>
 
-<head>
-    <style>
-      body {
-        width: 350px;
-        overflow-x: auto;
-        margin: 0px;
-        min-height: 200px;
-      }
 
-    </style>
-</head>
 
 
 <body>
-  <div id="tabs" style="outline:0; border: none; padding:0px; margin:0px;">
+  <div id="tabs">
         <ul>
           <li><a href="#tabPlaylist">Playlists</a></li>
           <li><a href="#tabQueue">Queue</a></li>
@@ -44,39 +29,47 @@
         </ul>
 
 
-        <div id="tabQueue" style="scroll:auto">
+        <div id="tabQueue">
             
             <span id="loginSpan">
             </span>
                
             <div id="queueWaitDiv"><span id="queueWaitText"></span></div>
-            <div style="margin-left: 83px">
-              <button id="saveButton">Save</button>
-              <button id="clear">Clear</button>
-              <input type="checkbox" id="shuffle"><label for="shuffle">Shuffle</label>
-              <button id="rewind">prev</button>
-              <button id="forward">next</button>
-              <button id="play">play</button>                 
+            <div>
+              <span id="rightButtons">
+                <button id="rewind" class="playerButtons"></button>                
+                <button id="play" class="playerButtons willPlay"></button>
+                <button id="forward" class="playerButtons" ></button>
+              </span>
             </div>
 
             <ul id="queueSortable" >
             </ul>
+
+            <span id="leftButtons">
+              <button id="saveButton" class="playerButtonsSmall"></button>
+              <button id="clear" class="playerButtonsSmall"></button>
+              <button id="shuffle" class="playerButtonsSmall"></button>
+            </span>
             
       </div>
-      <div id="tabPlaylist" style="overflow:auto">
-        <div id="playlistWaitDiv"><span id="plWaitText"><span></div>
+      <div id="tabPlaylist">
+        <div id="saveDiv"></div>
         <div id="tabPlaylistContent"></div>
       </div>
 
-      <div id="tabSearch" style="scroll:auto">
+      <div id="tabSearch">
         <input type="text" id="inputSearch">
-        <button id="butSearch">Search</button>
+        <button id="butSearch"></button>
         <div id="searchWaitDiv"><span id="searchWaitText"></span></div>
         <br>
         <div id='searchTop'></div>
         <div id='resultsDisp'></div>
       </div>
   </div>  
+  <hr/>
+  <div id="loaderImage"></div>
+  <div id="completedText" class='hide'></div>
 </body>
 
 </html>
