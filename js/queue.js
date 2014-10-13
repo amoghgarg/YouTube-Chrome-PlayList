@@ -67,7 +67,6 @@ function playClicked(){
 		chrome.runtime.sendMessage(
 			{type : "playClick"}
 		);
-		("#")
 	};
 };
 
@@ -155,8 +154,6 @@ function nextClicked(){
 		}
 		$("#"+nowPlay).removeClass('ui-state-active');
 		$("#"+nowPlay).addClass('ui-state-default');
-		$("#"+clicked).addClass('ui-state-active');
-		$("#"+clicked).removeClass('ui-state-default');
 
 		nowPlay = clicked;
 

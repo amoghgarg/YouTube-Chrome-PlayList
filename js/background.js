@@ -79,42 +79,60 @@ chrome.runtime.onMessage.addListener(
 				chrome.browserAction.setIcon({path:"img/iconBw.png"});
 				playing = false;
 				chrome.tabs.sendMessage(tabId,
-				{type:"pausePlaying"}
+					{type:"pausePlaying"}
 				);
 				break;
 			case "nextClicked":
-				vidInd++;
-				if(vidInd==vidLinks.length){
-					vidInd=0;
+				if(playing){
+					vidInd++;
+					if(vidInd==vidLinks.length){
+						vidInd=0;
+					}
+					if(shuffle){
+						vidInd = Math.floor((Math.random() * vidLinks.length));
+					}
+					chrome.runtime.sendMessage({
+						type:"changedToNextSong",
+						id:vidInd
+					})
+					chrome.tabs.update(tabId,{
+						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
+						active:false,
+					});
+					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
+					chrome.browserAction.setIcon({path:"img/iconCol.png"});
 				}
-				if(shuffle){
-					vidInd = Math.floor((Math.random() * vidLinks.length));
+				else{
+					chrome.runtime.sendMessage(
+						{type : "playClick"}
+					);
+					chrome.runtime.sendMessage({
+						type:"changedToNextSong",
+						id:vidInd
+					})
 				}
-				chrome.runtime.sendMessage({
-					type:"changedToNextSong",
-					id:vidInd
-				})
-				chrome.tabs.update(tabId,{
-					url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
-					active:false,
-				});
-				chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
-				chrome.browserAction.setIcon({path:"img/iconCol.png"});
 				break;
 			case "shuffle":
 				shuffle = request.shuffle;
 				break
 			case "prevClicked":
-				vidInd--;
-				if(vidInd==-1){
-					vidInd=vidLinks.length-1;
+				if(playing){
+					vidInd--;
+					if(vidInd==-1){
+						vidInd=vidLinks.length-1;
+					}
+					chrome.tabs.update(tabId,{
+						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
+						active:false,
+					});
+					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
+					chrome.browserAction.setIcon({path:"img/iconCol.png"});
 				}
-				chrome.tabs.update(tabId,{
-					url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
-					active:false,
-				});
-				chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
-				chrome.browserAction.setIcon({path:"img/iconCol.png"});
+				else{
+					chrome.runtime.sendMessage(
+						{type : "playClick"}
+					);
+				}
 				break;
 			case "songChanged":
 				vidInd=request.newInd;

@@ -24,7 +24,7 @@ function hideWaitPL(){
 function showWaitPL(input){
 	document.getElementById("loaderImage").style.visibility = "visible";
 	startAnimation();
-	var text = "";
+	var text = "default";
 	switch(input.type){
 		case "logging":
 			text = "Logged In";
