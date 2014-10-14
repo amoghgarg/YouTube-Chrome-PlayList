@@ -3,7 +3,7 @@ var currentLength;
 var canChange = true;
 var nowPlay;
 var listInd;
-var noticeText = "<h3>Empty Queue!</h3> <a id = \"openSearch\">Search</a> YouTube or choose from your saved <a id = \"openPlaylist\">playlists</a>."
+var noticeText = "Empty Queue!<br><a id = \"openSearch\">Search</a> YouTube or choose a <a id = \"openPlaylist\">playlist</a>"
 
 function setNotice(){
 	$("#notice").html(noticeText);
@@ -305,6 +305,7 @@ function updateTable(){
 	else{
 		setToPlay();
 	}
+
     /////////////////////////////////////
 }
 
@@ -351,6 +352,11 @@ chrome.runtime.onMessage.addListener(
 					hideWaitQ();
 				}	
 				updateTable();
+				if(request.from=="searchAdd"){
+					if(currentLength==1){
+						playClicked()
+					}
+				}
 				break;
 			case "changedToNextSong":
 				var clicked = request.id

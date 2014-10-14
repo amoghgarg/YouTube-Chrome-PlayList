@@ -241,7 +241,7 @@ chrome.runtime.onMessage.addListener(
 					"name" : request.name
 				};
 				vidLinks.push(toAdd);
-				chrome.runtime.sendMessage({type:"vidLinksUp", status:0})
+				chrome.runtime.sendMessage({type:"vidLinksUp", status:0, from:"searchAdd"})
 				break;
 		}
 	}

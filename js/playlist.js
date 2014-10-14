@@ -58,7 +58,7 @@ function updateLoginSpan(){
 
 
 		if(listList.length<1){
-			text = text + "<div id=\"noticePl\">No playlist found in your YouTube account.</div>"
+			text = text + "<div id=\"noticePl\">No playlist found in your YouTube account</div>"
 		}
              
 		for (var i=0; i<listList.length; i++){
