@@ -2,13 +2,15 @@ var queueWaitLoop;
 var playlistWaitLoop;
 var searchWaitLoop
 function tabChanged(event, ui){
-
-	$("#inputSearch").focus();
+	if(ui.newPanel.selector!="#tabQueue"){
+		$('hr').hide();
+	}else{
+		$('hr').show();
+	}
 
 	if(ui.newPanel.selector!="#tabPlaylist"){
 		updateLoginSpan()
 	}
-
 	if(ui.newPanel.selector=="#tabSearch"){
 		if(chrome.extension.getBackgroundPage().playing){
 			showWaitSearch({type:"suggested"})
@@ -16,6 +18,9 @@ function tabChanged(event, ui){
 				type:"searchRelated"
 			})
 		}
+		setTimeout(function(){
+			$("#inputSearch").focus();
+		}, 300);
 	}
 }
 

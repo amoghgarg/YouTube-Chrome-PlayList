@@ -3,10 +3,15 @@ var currentLength;
 var canChange = true;
 var nowPlay;
 var listInd;
-var noticeText = "<h3>Empty Queue!</h3> <a id = \"openSearch\">Search</a> YouTube or choose from your saved <a id = \"openPlaylist\">playlists</a>."
+var noticeText = "Empty Queue!<br><a id = \"openSearch\">Search</a> YouTube or choose a <a id = \"openPlaylist\">playlist</a>"
 
 function setNotice(){
 	$("#notice").html(noticeText);
+	$("#saveButton").hide();
+	$("#leftButtons").hide();
+	$("#rightButtons").hide();
+	$("#clear").hide();
+	$('hr').hide();
 	$("#openSearch").click(function(){
 		$( "#tabs" ).tabs({"active":2});
 	})
@@ -16,15 +21,15 @@ function setNotice(){
 }
 
 function setToPause(){
-	$("#play").removeClass("willPlay");
-	$("#play").addClass("willPause");
+	$("#play").removeClass("willPlay fa-play");
+	$("#play").addClass("willPause fa-pause");
 	$("#play").click(pauseClicked);
 }
 
 
 function setToPlay(){
-	$("#play").removeClass("willPause");
-	$("#play").addClass("willPlay");
+	$("#play").removeClass("willPause fa-pause");
+	$("#play").addClass("willPlay fa-play");
 	$("#play").click(playClicked)
 }
 
@@ -61,6 +66,7 @@ function playClicked(){
 		if( !nowPlay || nowPlay==-1){
 			nowPlay = 0
 		}
+		
 		$("#"+nowPlay).addClass('ui-state-active');
 		$("#"+nowPlay).removeClass('ui-state-default');
 
@@ -107,6 +113,7 @@ function pauseClicked(){
 
 	back = chrome.extension.getBackgroundPage();
 	nowPlay = back.vidInd;
+	
 	$("#"+nowPlay).removeClass('ui-state-active');
 	$("#"+nowPlay).addClass('ui-state-default');
 	setToPlay();
@@ -179,7 +186,8 @@ function clearQueue(){
 
 	setToPlay();
 	currentLength = 0;
-	$("#saveButton")[0].style.visibility="hidden"
+	// $("#saveButton")[0].style.visibility="hidden"
+	$("#saveButton").hide();
 	setNotice()
 	//updateTable();
 };
@@ -206,6 +214,7 @@ function shuffleToggled(event, ui){
 }
 
 function updateTable(){
+	
 	back = chrome.extension.getBackgroundPage();
 	var vidLinks = back.vidLinks;
 	nowPlay = back.vidInd;
@@ -214,14 +223,20 @@ function updateTable(){
 
 	if(back.loggedIn){
 		if(currentLength>0){
-			$("#saveButton")[0].style.visibility = "visible";
+			// $("#saveButton")[0].style.visibility = "visible";
+			$("#saveButton").show();
+			$("#leftButtons").show();
+			$("#rightButtons").show();
+			$("#clear").show();
 		}
 		else{
-			$("#saveButton")[0].style.visibility = "hidden";
+			// $("#saveButton")[0].style.visibility = "hidden";
+			$("#saveButton").hide();
 		}
 	}
 	else{
-		$("#saveButton")[0].style.visibility = "hidden";	
+		// $("#saveButton")[0].style.visibility = "hidden";	
+		$("#saveButton").hide();
 	}
 
 	playBut = document.getElementById("play");		
@@ -245,7 +260,7 @@ function updateTable(){
 
 	for (i = 0; i < currentLength; i++) {
 		table += "<li id = \"" +i +"\" class=\"vidItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\"></span>"+
-		" <span><div>" + (vidLinks[i].name) + "</div></span> <span><button class=\"remove\"></button></span> </li>";
+		" <span><div>" + (vidLinks[i].name) + "</div></span> <span><button class=\"fa-trash remove\"></button></span> </li>";
 	}
 	document.getElementById('queueSortable').innerHTML = table;
 
@@ -258,7 +273,7 @@ function updateTable(){
 	$( ".remove" ).button({
       text: "remove",
       icons: {
-        primary: "ui-icon-trash"
+        primary: "fa-trash"
       }
     });
 
@@ -297,6 +312,7 @@ function updateTable(){
      ///////////////////////////////////////
 
     //// Play and pause button cofiguration
+    
     if(back.playing){
 		setToPause();
     	$("#"+nowPlay).addClass('ui-state-active');
@@ -305,6 +321,7 @@ function updateTable(){
 	else{
 		setToPlay();
 	}
+
     /////////////////////////////////////
 }
 
@@ -325,7 +342,7 @@ function removeItem(id){
 function songChosen(){
 	if(canChange){
 		clicked = ($(this).attr('id'));
-			   
+		
 		if(clicked!=nowPlay | (clicked==nowPlay & !chrome.extension.getBackgroundPage().playing) ){
 			$("#"+nowPlay).removeClass('ui-state-active');
 			$("#"+nowPlay).addClass('ui-state-default');
@@ -351,6 +368,11 @@ chrome.runtime.onMessage.addListener(
 					hideWaitQ();
 				}	
 				updateTable();
+				if(request.from=="searchAdd"){
+					if(currentLength==1){
+						playClicked()
+					}
+				}
 				break;
 			case "changedToNextSong":
 				var clicked = request.id

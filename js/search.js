@@ -23,19 +23,25 @@ function showWaitSearch(input){
 
 $(function(){
 	$("#butSearch").click(searchClicked);
+	$("#resultsDisp").html("");
+	if ($("#inputSearch").val().length == 0){
+		str = '';
+		str += "<div id=\"noticePl\">Search Youtube and Click to add to Queue</div>";
+		$("#resultsDisp").html(str);
+	};
 	$("#inputSearch").keyup(function(event){
-	    if(event.keyCode == 13 & $("#inputSearch").val().length > 0){
-	    	searchClicked();
-    	}
-    });
+		if(event.keyCode == 13 & $("#inputSearch").val().length > 0){
+			searchClicked();
+		}
+	});
 
-    $(window).scroll(function() {
-	    if($(window).scrollTop() == $(document).height() - $(window).height()) {
-	        chrome.runtime.sendMessage({
+	$(window).scroll(function() {
+		if($(window).scrollTop() == $(document).height() - $(window).height()) {
+			chrome.runtime.sendMessage({
 				type:"searchQueryonScroll",
 				nextType:resultState,
 			});
-    	}
+		}
 	});
 
 });
@@ -43,8 +49,9 @@ $(function(){
 function displayResults(input){
 	var text = "";
 	for(var i = 0; i<serResults.length; i++){
-		text = text + "<div class=\"searchedVid\" id=\""+i+"\"><img src = \""+serResults[i].thumbNail+"\"><div id='text'>" + serResults[i].name+"</div></div><br>";
+		text = text + "<div class=\"searchedVid\" id=\""+i+"\"><img src = \""+serResults[i].thumbNail+"\"><div id='text'>" + serResults[i].name+"</div></div>";
 	}
+	text += "</br>"
 
 	if(input == "clear"){
 		$("#resultsDisp").html(text)
@@ -52,6 +59,8 @@ function displayResults(input){
 	else if(input == "add"){
 		$("#resultsDisp").html($("#resultsDisp").html() + text)
 	}
+	// $("#resultsDisp").show()
+
 	
 	$(".searchedVid").click(searchVidSel);
 	hideWaitSearch()

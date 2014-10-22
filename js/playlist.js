@@ -58,7 +58,7 @@ function updateLoginSpan(){
 
 
 		if(listList.length<1){
-			text = text + "<div id=\"noticePl\">No playlist found in your YouTube account.</div>"
+			text = text + "<div id=\"noticePl\">No playlist found in your YouTube account</div>"
 		}
              
 		for (var i=0; i<listList.length; i++){
@@ -177,8 +177,8 @@ function addToPlaylist(event, ui){
 function saveQueue(){
 	$( "#tabs" ).tabs({"active":0});
 	var text = "<input type=\"text\" id=\"playListName\" placeholder=\"Save to a new playlist...\" >";
-	text = text + "<button id=\"newPlaylistButton\"></button>"
-	text = text + "<button id=\"cancelSaveButton\" title=\"Cancel save\"></button>"
+	text = text + "<div id=\"newPlaylistButton\">Save</div>"
+	text = text + "<button id=\"cancelSaveButton\" class=\"fa-remove\" title=\"Cancel save\"></button>"
 	if(listList.length>0){
 		text = text +" <div id=\"choiceText\"> Or add to existing playlists:</div>";		
 	}
@@ -186,8 +186,11 @@ function saveQueue(){
 		$("#noticePl").css("visibility","hidden");
 	}
 	document.getElementById("saveDiv").innerHTML = text;
-	$("#cancelSaveButton").click(updateLoginSpan)
-	$("#playListName").focus();
+	$("#cancelSaveButton").click(updateLoginSpan);
+	setTimeout(function(){
+		$("#playListName").focus();
+	}, 300);
+	// $("#playListName").focus();
 	$("#newPlaylistButton").click(createNewPlaylist);
 
 

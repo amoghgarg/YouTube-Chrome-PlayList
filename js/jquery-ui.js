@@ -15217,7 +15217,7 @@ var tabs = $.widget( "ui.tabs", {
 			tabIndex: -1
 		});
 		this.panels.not( this._getPanelForTab( this.active ) )
-			.hide()
+			.hide().removeClass('active-tab')
 			.attr({
 				"aria-hidden": "true"
 			});
@@ -15238,6 +15238,10 @@ var tabs = $.widget( "ui.tabs", {
 				.attr({
 					"aria-hidden": "false"
 				});
+			var that = this;
+			setTimeout(function(){
+				that._getPanelForTab(that.active).addClass('active-tab');
+			}, 50);
 		}
 	},
 
@@ -15448,6 +15452,7 @@ var tabs = $.widget( "ui.tabs", {
 		if ( toShow.length ) {
 			this.load( this.tabs.index( tab ), event );
 		}
+
 		this._toggle( event, eventData );
 	},
 
@@ -15471,6 +15476,9 @@ var tabs = $.widget( "ui.tabs", {
 				that._show( toShow, that.options.show, complete );
 			} else {
 				toShow.show();
+				setTimeout(function(){
+					toShow.addClass('active-tab');
+				}, 50);
 				complete();
 			}
 		}
@@ -15483,7 +15491,7 @@ var tabs = $.widget( "ui.tabs", {
 			});
 		} else {
 			eventData.oldTab.closest( "li" ).removeClass( "ui-tabs-active ui-state-active" );
-			toHide.hide();
+			toHide.hide().removeClass('active-tab');
 			show();
 		}
 
