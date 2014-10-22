@@ -404,7 +404,11 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     font-size: 14px;
     line-height: 21px;
     color: #c0c0c0;
+<<<<<<< HEAD
     font-family: 'Open Sans Light';
+=======
+
+>>>>>>> origin/master
 }
 
 #notice{
@@ -417,10 +421,17 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     font-size: 14px;
     line-height: 21px;
     color: #c0c0c0;
+<<<<<<< HEAD
     font-family: 'Open Sans Light';
 }
 #notice a{
     color:#6161F4;
+=======
+
+}
+#notice a{
+    color:#0000FF;
+>>>>>>> origin/master
     text-decoration: none;
     cursor: pointer;
 }
