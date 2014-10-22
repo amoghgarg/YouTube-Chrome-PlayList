@@ -16,14 +16,12 @@ function login(){
 
 function hideWaitPL(){
 	document.getElementById("completedText").className = "show";	
-	stopAnimation();
-	document.getElementById("loaderImage").style.visibility = "hidden";
+	document.getElementById("loadingProgressG_1").style.visibility = "hidden";
 	setTimeout(function(){document.getElementById("completedText").className="hide"}, 1000);
 }
 
 function showWaitPL(input){
-	document.getElementById("loaderImage").style.visibility = "visible";
-	startAnimation();
+	document.getElementById("loadingProgressG_1").style.visibility = "visible";
 	var text = "default";
 	switch(input.type){
 		case "logging":
@@ -62,7 +60,7 @@ function updateLoginSpan(){
 		}
              
 		for (var i=0; i<listList.length; i++){
-			text=text+"<li id=\""+i+"\" class=\"listItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\"></span><span><div>"+listList[i].name+"</div></span><span><button class=\"delPlay\"></span></li>";
+			text=text+"<li id=\""+i+"\" class=\"listItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\"></span><span><div>"+listList[i].name+"</div></span><span><button class=\"fa-trash delPlay\"></span></li>";
 		}
 		text = text + "</ul></div>"
 		document.getElementById('tabPlaylistContent').innerHTML = text;
@@ -70,10 +68,7 @@ function updateLoginSpan(){
     	$(".listItem").click(playListSel);
 
     	$( ".delPlay" ).button({
-			text: "remove",
-			icons: {
-			  primary: "ui-icon-trash"
-			}
+			text: "remove"
 		});
 		$(".delPlay").mouseenter(function(){
 				$(".listItem").unbind("click")
@@ -191,6 +186,9 @@ function saveQueue(){
 		$("#playListName").focus();
 	}, 300);
 	// $("#playListName").focus();
+
+
+
 	$("#newPlaylistButton").click(createNewPlaylist);
 
 

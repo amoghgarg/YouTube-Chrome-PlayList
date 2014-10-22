@@ -11,13 +11,11 @@ function searchClicked(){
 }
 
 function hideWaitSearch(){
-	stopAnimation();
-	document.getElementById("loaderImage").style.visibility = "hidden";	
+	document.getElementById("loadingProgressG_1").style.visibility = "hidden";	
 }
 
 function showWaitSearch(input){
-	document.getElementById("loaderImage").style.visibility = "visible";
-	startAnimation();
+	document.getElementById("loadingProgressG_1").style.visibility = "visible";
 	document.getElementById("completedText").innerHTML = "Added to Queue"
 }
 

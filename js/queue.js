@@ -36,14 +36,12 @@ function setToPlay(){
 
 function hideWaitQ(){
 	document.getElementById("completedText").className = "show";	
-	stopAnimation();
-	document.getElementById("loaderImage").style.visibility = "hidden";
+	document.getElementById("loadingProgressG_1").style.visibility = "hidden";
 	setTimeout(function(){document.getElementById("completedText").className="hide"}, 1000);
 }
 
 function showWaitQ(input){
-	document.getElementById("loaderImage").style.visibility = "visible";
-	startAnimation();
+	document.getElementById("loadingProgressG_1").style.visibility = "visible";
 	document.getElementById("completedText").innerHTML = "Songs added to queue."
 }
 
@@ -271,10 +269,7 @@ function updateTable(){
 	//// Vid Item changes
 	$(".vidItem").click(songChosen);
 	$( ".remove" ).button({
-      text: "remove",
-      icons: {
-        primary: "fa-trash"
-      }
+      text: "remove"
     });
 
 	$(".remove").mouseenter(function(){

@@ -3,9 +3,9 @@ var playlistWaitLoop;
 var searchWaitLoop
 function tabChanged(event, ui){
 	if(ui.newPanel.selector!="#tabQueue"){
-		$('hr').hide();
+		$('#saveFooter').hide();
 	}else{
-		$('hr').show();
+		$('#saveFooter	').show();
 	}
 
 	if(ui.newPanel.selector!="#tabPlaylist"){
