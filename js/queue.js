@@ -327,7 +327,7 @@ function removeItem(id){
 		"id":id
 	});
 	
-	if(nowPlay>id){
+	if(nowPlay>=id){
 		nowPlay = (nowPlay-1)%currentLength;
 	}
 	updateID();

@@ -8,10 +8,16 @@ function searchClicked(){
 		type:"searchQuery",
 		text:$("#inputSearch").val()
 	})
+
+	chrome.runtime.sendMessage({
+				type:"searchQueryonScroll",
+				nextType:resultState,
+			});
 }
 
 function hideWaitSearch(){
 	document.getElementById("loadingProgressG_1").style.visibility = "hidden";	
+
 }
 
 function showWaitSearch(input){
@@ -33,14 +39,14 @@ $(function(){
 		}
 	});
 
-	$(window).scroll(function() {
-		if($(window).scrollTop() == $(document).height() - $(window).height()) {
-			chrome.runtime.sendMessage({
-				type:"searchQueryonScroll",
-				nextType:resultState,
-			});
-		}
-	});
+	// $(window).scroll(function() {
+	// 	if($(window).scrollTop() == $(document).height() - $(window).height()) {
+	// 		chrome.runtime.sendMessage({
+	// 			type:"searchQueryonScroll",
+	// 			nextType:resultState,
+	// 		});
+	// 	}
+	// });
 
 });
 

@@ -34,10 +34,9 @@ hr {
     border-top: 1px solid #c4302b;
     margin: 1em 0;
     padding: 0;
-    width: 346px;
+    width: 330px;
     position:absolute;
     bottom: 23px;
-    left:2px;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
@@ -168,7 +167,11 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     margin:0;
     padding: 0;
     float: none;
-    font-family: 'Open Sans Light'
+    font-family: 'Open Sans Light';
+    padding-bottom: 10px;
+	padding-left: 30px;
+	padding-right: 30px;
+	padding-top: 11px;
 } 
 #tabs .ui-tabs-nav .ui-state-active a { 
 }
@@ -191,7 +194,6 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     cursor:pointer;
     background-color: #EDEDED;
     height: 60px;
-    -webkit-transform: scale(1.02);
     z-index: 5;
 }
 
@@ -234,15 +236,14 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     background:#EDEDED;
     border:none;
     font-size:9pt;
-    -webkit-transform: scale(1.02);
 }
 
 
 .playerButtons{
-    background-size: 25px 25px;
+    /*background-size: 25px 25px;
     height: 25px;  
-    width: 25px;
-    background-color: transparent;
+    width: 25px;*/ 
+  	background-color: transparent;
     border: none;
     outline: none;
     cursor: pointer;
@@ -254,9 +255,9 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 }
 
 .playerButtonsSmall{
-    background-size: 20px 20px;
+    /*background-size: 20px 20px;
     height: 20px;  
-    width: 20px;
+    width: 20px;*/
     background-color: transparent;
     border: none;
     outline: none;
@@ -321,10 +322,9 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	position: absolute;
 	left: 59%;
 	font-family: 'FontAwesome';
+	font-size: 14pt;
  }
 
- #forward:hover{
- }
 
  #shuffle{
     position: fixed;
@@ -332,6 +332,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     top: 18px;
     color: #4F4C4C;
     font-family: 'FontAwesome';
+    font-size: 12pt;
  }
 
  #shuffle.checked{
@@ -346,6 +347,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     position: absolute;
 	left: 33%;
 	font-family: 'FontAwesome';
+	font-size: 14pt;
  }
 
  #rewind:hover{

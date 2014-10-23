@@ -184,6 +184,10 @@ chrome.runtime.onMessage.addListener(
 					});
 					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 				}
+				chrome.runtime.sendMessage({
+						type:"changedToNextSong",
+						id:vidInd
+				})
 				if(id<vidInd){
 					vidInd=(vidInd-1)%vidLinks.length;
 				}
