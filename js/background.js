@@ -8,7 +8,6 @@ var listList = [];
 var listListETag = '';
 var listIndex = -1;
 var loggedIn = false;
-var appID = "oldagkdddpneeopaofiflfdidknmhgbb"
 var searchNextPageToken;
 var publicKey = "AIzaSyAz5ndOWI74hpgbrC9IZJmx-YxyLehdgl0";
 var lastVideoID
@@ -237,7 +236,7 @@ chrome.runtime.onMessage.addListener(
 				makeRequest({"type":"searchRelated", "life":2})
 				break;
 			case "searchQueryonScroll":
-				makeRequest({"type":"searchQueryonScroll", "nextType":request.nextType})
+				makeRequest({"type":"searchQueryonScroll", "nextType":request.nextType, "life":2})
 				break;
 			case "addVideo":
 				var toAdd = {
@@ -490,7 +489,6 @@ function makeRequest(input){
 					break;
 				case 200:
 					switch (input.type){
-
 						case "getLists":
 							parseListJSON(xmlhttp.response)
 							break;

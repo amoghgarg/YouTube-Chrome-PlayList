@@ -250,7 +250,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     color: #4F4C4C;
 }
 
-.playerButtons:hover{
+#shuffle:hover, .playerButtons:hover{
 	color: #292929;
 }
 
@@ -320,7 +320,8 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
  #forward{
 	position: absolute;
-	left: 59%;
+	left: 67%;
+	transform: translate(-50%,0);
 	font-family: 'FontAwesome';
 	font-size: 14pt;
  }
@@ -329,7 +330,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
  #shuffle{
     position: fixed;
     left: 89%;
-    top: 18px;
+    top: 16px;
     color: #4F4C4C;
     font-family: 'FontAwesome';
     font-size: 12pt;
@@ -346,6 +347,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 #rewind{
     position: absolute;
 	left: 33%;
+	transform: translate(-50%,0);
 	font-family: 'FontAwesome';
 	font-size: 14pt;
  }
@@ -391,9 +393,8 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	transform: translate(-50%,0);
 	width: 30px;
 	height: 30px;
-	border: 2px solid #292929;
-	border-radius: 50%;
-	margin-top: -1px;
+	margin-top: -5px;
+	font-size: 14pt;
 }
 
 #choiceText{
