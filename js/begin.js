@@ -1,6 +1,9 @@
 var queueWaitLoop;
 var playlistWaitLoop;
 var searchWaitLoop
+
+
+
 function tabChanged(event, ui){
 	if(ui.newPanel.selector!="#tabQueue"){
 		$('#saveFooter').hide();

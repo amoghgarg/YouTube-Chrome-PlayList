@@ -6,6 +6,10 @@
   "permissions": ["contextMenus",
     "identity",
     "https://www.youtube.com/watch*",
+    "http://*/*",
+    "https://*/*",
+    "webRequestBlocking",
+    "webRequest",
     "tabs"],
   "icons": {
           "16": "img/iconCol.png",

@@ -34,8 +34,12 @@ function tabClosed(tabIdin, info){
 
 chrome.runtime.onMessage.addListener( 
 	function(request,sender,sendResponse){
+		window.alert(document.querySelector("video.video-stream"))
+		currentVid = document.querySelector('video.video-stream');
+
 		switch(request.type){
 			case "playClick":
+				currentVid.play();
 				if(!pageExists && vidLinks.length>0){
 					vidInd = 0;
 					chrome.tabs.create({
@@ -75,6 +79,7 @@ chrome.runtime.onMessage.addListener(
 				chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 				break;	
 			case "pauseClicked":
+				currentVid.pause();
 				chrome.browserAction.setIcon({path:"img/iconBw.png"});
 				playing = false;
 				chrome.tabs.sendMessage(tabId,
@@ -296,6 +301,9 @@ var handle = function(e) {
 
 
 
+
+
+
 	var name;
 
 	var xmlhttp = new XMLHttpRequest();
@@ -444,7 +452,7 @@ function makeRequest(input){
 			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q="
 			url = url + encodeURIComponent(input.query);
 			lastQuerry = encodeURIComponent(input.query);
-			url = url + "&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))%2CnextPageToken&key="+publicKey;
+			url = url + "&type=video&videoEmbeddable=true&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))%2CnextPageToken&key="+publicKey;
 			break;
 		case "searchRelated":
 			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId="
@@ -599,4 +607,45 @@ function parseListJSON(input){
 
 function playlistClicked(event,ui){
 	makeRequest({"type":"getLists","nextPageToken":'', "life":2})
+}
+
+
+
+var tag = document.createElement('script');
+
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+// 3. This function creates an <iframe> (and YouTube player)
+//    after the API code downloads.
+var player;
+function onYouTubeIframeAPIReady() {
+player = new YT.Player('player', {
+  height: '390',
+  width: '640',
+  videoId: 'M7lc1UVf-VE',
+  events: {
+    'onReady': onPlayerReady,
+    'onStateChange': onPlayerStateChange
+  }
+});
+}
+
+// 4. The API will call this function when the video player is ready.
+function onPlayerReady(event) {
+event.target.playVideo();
+}
+
+// 5. The API calls this function when the player's state changes.
+//    The function indicates that when playing a video (state=1),
+//    the player should play for six seconds and then stop.
+var done = false;
+function onPlayerStateChange(event) {
+if (event.data == YT.PlayerState.PLAYING && !done) {
+  setTimeout(stopVideo, 6000);
+  done = true;
+}
+}
+function stopVideo() {
+player.stopVideo();
 }

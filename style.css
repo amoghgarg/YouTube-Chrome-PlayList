@@ -47,8 +47,13 @@ hr {
 	height: 320px;
 }
 
-#tabPlaylistContent, #queueSortable {
+
+#tabPlaylistContent {
 	height: 304px;
+}
+
+ #queueSortable {
+	height: 280px;
 }
 
  #tabPlaylistContent, #resultsDisp, #queueSortable {
@@ -56,6 +61,10 @@ hr {
 	width: 330px;
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+
+#queueSortable{
+	margin-top:24px;
 }
 
 
@@ -441,7 +450,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	width:290px;
 }
 
-input {
+input[type="text"] {
     border: 1px solid #dadada;
     width:240px;
     padding: 0 25px 2px;
@@ -454,7 +463,7 @@ input {
     font-family: 'Open Sans Light';
 }
 
-input:focus {
+input[type="text"]:focus {
     border: 1px solid  #c4302b;
     outline: none;
     cursor: text;
@@ -509,4 +518,41 @@ input:focus {
 	100%{
 		margin-left:330px;
 	}
+}
+
+#timeSeek{
+    -webkit-appearance: none;
+	background-color: silver;
+	height: 4px;
+	outline: none;
+	position: fixed;
+	width: 180px;
+	top: 52px;
+	left: 50%;
+	transform: translate(-50%,0);
+	margin: 0px;
+}
+
+#timeSeek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: #000000;
+    opacity: 0.5;
+    width: 10px;
+    height:10px;
+    border-radius:50%;
+    top:4px;    
+}
+
+#timeDuration{
+	position: fixed;
+	top: 46px;
+	right: 29px;
+	font-size: 9pt;
+}
+
+#timeCurrent{
+	position: fixed;
+	top: 46px;
+	left: 35px;
+	font-size: 9pt;
 }
