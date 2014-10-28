@@ -47,8 +47,13 @@ hr {
 	height: 320px;
 }
 
-#tabPlaylistContent, #queueSortable {
+
+#tabPlaylistContent {
 	height: 304px;
+}
+
+ #queueSortable {
+	height: 280px;
 }
 
  #tabPlaylistContent, #resultsDisp, #queueSortable {
@@ -56,6 +61,10 @@ hr {
 	width: 330px;
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+
+#queueSortable{
+	margin-top:24px;
 }
 
 
@@ -250,7 +259,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     color: #4F4C4C;
 }
 
-.playerButtons:hover{
+#shuffle:hover, .playerButtons:hover{
 	color: #292929;
 }
 
@@ -320,7 +329,8 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
  #forward{
 	position: absolute;
-	left: 59%;
+	left: 67%;
+	transform: translate(-50%,0);
 	font-family: 'FontAwesome';
 	font-size: 14pt;
  }
@@ -329,7 +339,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
  #shuffle{
     position: fixed;
     left: 89%;
-    top: 18px;
+    top: 16px;
     color: #4F4C4C;
     font-family: 'FontAwesome';
     font-size: 12pt;
@@ -346,6 +356,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 #rewind{
     position: absolute;
 	left: 33%;
+	transform: translate(-50%,0);
 	font-family: 'FontAwesome';
 	font-size: 14pt;
  }
@@ -391,9 +402,8 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	transform: translate(-50%,0);
 	width: 30px;
 	height: 30px;
-	border: 2px solid #292929;
-	border-radius: 50%;
-	margin-top: -1px;
+	margin-top: -5px;
+	font-size: 14pt;
 }
 
 #choiceText{
@@ -440,7 +450,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	width:290px;
 }
 
-input {
+input[type="text"] {
     border: 1px solid #dadada;
     width:240px;
     padding: 0 25px 2px;
@@ -453,7 +463,7 @@ input {
     font-family: 'Open Sans Light';
 }
 
-input:focus {
+input[type="text"]:focus {
     border: 1px solid  #c4302b;
     outline: none;
     cursor: text;
@@ -508,4 +518,41 @@ input:focus {
 	100%{
 		margin-left:330px;
 	}
+}
+
+#timeSeek{
+    -webkit-appearance: none;
+	background-color: silver;
+	height: 4px;
+	outline: none;
+	position: fixed;
+	width: 180px;
+	top: 52px;
+	left: 50%;
+	transform: translate(-50%,0);
+	margin: 0px;
+}
+
+#timeSeek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: #000000;
+    opacity: 0.5;
+    width: 10px;
+    height:10px;
+    border-radius:50%;
+    top:4px;    
+}
+
+#timeDuration{
+	position: fixed;
+	top: 46px;
+	right: 29px;
+	font-size: 9pt;
+}
+
+#timeCurrent{
+	position: fixed;
+	top: 46px;
+	left: 35px;
+	font-size: 9pt;
 }
