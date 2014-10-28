@@ -34,12 +34,8 @@ function tabClosed(tabIdin, info){
 
 chrome.runtime.onMessage.addListener( 
 	function(request,sender,sendResponse){
-		window.alert(document.querySelector("video.video-stream"))
-		currentVid = document.querySelector('video.video-stream');
-
 		switch(request.type){
 			case "playClick":
-				currentVid.play();
 				if(!pageExists && vidLinks.length>0){
 					vidInd = 0;
 					chrome.tabs.create({
@@ -79,7 +75,6 @@ chrome.runtime.onMessage.addListener(
 				chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 				break;	
 			case "pauseClicked":
-				currentVid.pause();
 				chrome.browserAction.setIcon({path:"img/iconBw.png"});
 				playing = false;
 				chrome.tabs.sendMessage(tabId,

@@ -29,5 +29,12 @@
     "client_id": "893139596307-e3ltcu42pglj8qrml16ei3auhbe6h7ke.apps.googleusercontent.com",
     "scopes": ["https://www.googleapis.com/auth/youtube"]
   },
-  "manifest_version": 2
+  "manifest_version": 2,
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/embed/*?autoplay=1&enablejsapi=1&chrome-extension:*"],
+      "all_frames": true,
+      "js": ["js/inject.js"]
+    }
+    ]
 }

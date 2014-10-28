@@ -1,12 +1,18 @@
-currentVid = document.querySelector('video.video-stream');
+var currentVid;
+setTimeout(function(){
+	console.log("script inserted")
+	currentVid = document.querySelector('.video-stream');
+	if(currentVid){
+		console.log("player element fetched")
+	}
+	currentVid.addEventListener('ended',videoEndedHand);
+	currentVid.addEventListener('pause', pausedFromWindow);
+	currentVid.addEventListener('play', playedFromWindow);
+},2000);
 
-//for( key in currentVid){
-//	console.log(key);
-//};
-
-currentVid.addEventListener('ended',videoEndedHand);
-currentVid.addEventListener('pause', pausedFromWindow);
-currentVid.addEventListener('play', playedFromWindow);
+setTimeout(function(){
+	currentVid.pause();
+},6000)
 
 function pausedFromWindow(){
 	chrome.runtime.sendMessage({
