@@ -14,6 +14,7 @@ var publicKey = "AIzaSyAz5ndOWI74hpgbrC9IZJmx-YxyLehdgl0";
 var lastVideoID
 var lastQuerry
 var shuffle
+var vidDuration = 0;
 
 
 function tabCreated(tab){
@@ -246,6 +247,10 @@ chrome.runtime.onMessage.addListener(
 				};
 				vidLinks.push(toAdd);
 				chrome.runtime.sendMessage({type:"vidLinksUp", status:0, from:"searchAdd"})
+				break;
+			case "durationInfo":
+				console.log("Duration received:"+request.info)
+				vidDuration = request.info;
 				break;
 		}
 	}

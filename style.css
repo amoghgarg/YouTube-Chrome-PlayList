@@ -521,38 +521,56 @@ input[type="text"]:focus {
 }
 
 #timeSeek{
-    -webkit-appearance: none;
-	background-color: silver;
-	height: 4px;
-	outline: none;
+	float: left;
+	clear: left;
+	height:4px;
+	margin: 0px;
+	border:none;
 	position: fixed;
 	width: 180px;
-	top: 52px;
+	top: 56px;
 	left: 50%;
 	transform: translate(-50%,0);
-	margin: 0px;
+	background:gray;
 }
 
-#timeSeek::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    background-color: #000000;
-    opacity: 0.5;
-    width: 10px;
-    height:10px;
-    border-radius:50%;
-    top:4px;    
+#timeSeek .ui-slider-range { 
+	height:4px;
+	background: #c4302b; 
+	border:none;
+	outline:none;
+	border-radius: 0;
+}
+#timeSeek .ui-slider-handle { 
+	width: 10px;
+	height: 10px;
+	border-color: #ef2929; 
+	border:none;
+	outline:none;
+	border-radius: 50%;
+	background: black;
+	top:-3px;
+	margin:0;
+	cursor: pointer;
+}
+#timeSeek .ui-slider-handle:active { 
+	border-color: #ef2929; 
+	border:none;
+	background: black;
+	outline:none;
+	border-radius: 50%
 }
 
 #timeDuration{
 	position: fixed;
-	top: 46px;
+	top:50px;
 	right: 29px;
 	font-size: 9pt;
 }
 
 #timeCurrent{
 	position: fixed;
-	top: 46px;
+	top: 50px;
 	left: 35px;
 	font-size: 9pt;
 }

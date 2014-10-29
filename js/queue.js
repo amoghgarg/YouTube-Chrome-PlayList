@@ -4,6 +4,7 @@ var canChange = true;
 var nowPlay;
 var listInd;
 var noticeText = "Empty Queue!<br><a id = \"openSearch\">Search</a> YouTube or choose a <a id = \"openPlaylist\">playlist</a>"
+var updateTime = 1;
 
 function setNotice(){
 	$("#notice").html(noticeText);
@@ -195,6 +196,17 @@ function loadThings() {
 	updateTable()
 ;}
 
+function prettyTime(input){
+	var h = Math.floor(input/3600); 
+	input = input - 3600*h;
+	var m = Math.floor(input/60);
+	s = input - m*60;
+	s = s >= 10 ? s : "0"+s.toString();
+	endString = m+":"+s;
+	endString = h>0 ? h+":"+endString : endString
+	return (endString)
+}
+
 function shuffleToggled(event, ui){
 	var temp;
 	if( $("#shuffle.checked").length==1 ){
@@ -209,6 +221,19 @@ function shuffleToggled(event, ui){
 		type:"shuffle",
 		shuffle:temp
 	})
+}
+
+function setSeekbar(duration){
+	console.log("setSeekbad carled"+duration);
+	$("#timeDuration").html(prettyTime(duration));
+	$("#timeSeek").slider("option","max",duration);	
+}
+
+function updateSeekbar(time){
+	if(updateTime){
+		$("#timeCurrent").html(prettyTime(time));
+		$("#timeSeek").slider("value",time);
+	}
 }
 
 function updateTable(){
@@ -316,8 +341,27 @@ function updateTable(){
 	else{
 		setToPlay();
 	}
-
     /////////////////////////////////////
+
+    $( "#timeSeek" ).slider({
+			orientation: "horizontal",
+			range: "min",
+			max: 255,
+			value: 0,
+			start: function(event, ui){
+				updateTime = 0;
+				console.log("started")
+			},
+			stop: function(event, ui){
+				updateTime = 1;
+				chrome.runtime.sendMessage({
+					type: "seekVideo",
+					"info": ui.value
+				})
+				console.log("ended, seeking to:"+ui.value);
+			}
+	});
+	setSeekbar(back.vidDuration);
 }
 
 
@@ -376,6 +420,13 @@ chrome.runtime.onMessage.addListener(
 				$("#"+clicked).addClass('ui-state-active');
 				$("#"+clicked).removeClass('ui-state-default');
 				nowPlay = clicked;
+				break;
+			case "timeInfo":
+				updateSeekbar(request.info);
+				break;
+			case "durationInfo":
+				console.log("Duration changed signal received.")
+				setSeekbar(request.info);
 				break;
 		}
 	}
