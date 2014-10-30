@@ -5,6 +5,7 @@ var nowPlay;
 var listInd;
 var noticeText = "Empty Queue!<br><a id = \"openSearch\">Search</a> YouTube or choose a <a id = \"openPlaylist\">playlist</a>"
 var updateTime = 1;
+var tabId
 
 function setNotice(){
 	$("#notice").html(noticeText);
@@ -17,7 +18,9 @@ function setNotice(){
 		$( "#tabs" ).tabs({"active":2});
 	})
 	$("#openPlaylist").click(function(){
-		$( "#tabs" ).tabs({"active":0});
+		$( "#tabs" ).tabs({
+			"active":0,
+		});
 	})
 }
 
@@ -60,6 +63,7 @@ function playClicked(){
 		
 
 		back = chrome.extension.getBackgroundPage();
+		tabId = back.tabId;
 		nowPlay = back.vidInd;
 
 		if( !nowPlay || nowPlay==-1){
@@ -223,16 +227,14 @@ function shuffleToggled(event, ui){
 	})
 }
 
-function setSeekbar(duration){
-	console.log("setSeekbad carled"+duration);
-	$("#timeDuration").html(prettyTime(duration));
-	$("#timeSeek").slider("option","max",duration);	
-}
 
-function updateSeekbar(time){
+
+function updateSeekbar(response){
 	if(updateTime){
-		$("#timeCurrent").html(prettyTime(time));
-		$("#timeSeek").slider("value",time);
+		$("#timeCurrent").html(prettyTime(response.current));
+		$("#timeDuration").html(prettyTime(response.duration))
+		$("#timeSeek").slider("option","value",response.current);
+		$("#timeSeek").slider("option","max",response.duration);
 	}
 }
 
@@ -243,6 +245,7 @@ function updateTable(){
 	nowPlay = back.vidInd;
 	currentLength = vidLinks.length;
 	shuffleState = back.shuffle;
+	tabId = back.tabId;
 
 	if(back.loggedIn){
 		if(currentLength>0){
@@ -283,7 +286,7 @@ function updateTable(){
 
 	for (i = 0; i < currentLength; i++) {
 		table += "<li id = \"" +i +"\" class=\"vidItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\"></span>"+
-		" <span><div>" + (vidLinks[i].name) + "</div></span> <span><button class=\"fa-trash remove\"></button></span> </li>";
+		" <span><div>" + (vidLinks[i].name) + "</div></span> <span><button class=\"fa-trash remove\"></button><button title=\"Similar Songs\" class=\"fa-link similar\"></button></span> </li>";
 	}
 	document.getElementById('queueSortable').innerHTML = table;
 
@@ -293,15 +296,15 @@ function updateTable(){
 
 	//// Vid Item changes
 	$(".vidItem").click(songChosen);
-	$( ".remove" ).button({
+	$( ".remove, .similar" ).button({
       text: "remove"
     });
 
-	$(".remove").mouseenter(function(){
+	$(".remove , .similar").mouseenter(function(){
     	 canChange = false;
 	});
 
-	$(".remove").mouseleave(function(){
+	$(".remove, .similar").mouseleave(function(){
 		 canChange = true;
 	});
 
@@ -314,12 +317,18 @@ function updateTable(){
     		setNotice();
     	}
     });
+    $(".similar").click(function(){
+		$( "#tabs" ).tabs({
+			"active":2,
+		});
+	})
     $(".vidItem").mouseenter(
       function(){ 
-      	$(this).children("span").children('div')[0].style.width="82%"
+      	$(this).children("span").children('div')[0].style.width="74%"
         $(this).removeClass("ui-state-default");
         $(this).addClass("ui-state-hover");
         $(this).children("span").children("button")[0].style.visibility="visible";
+        $(this).children("span").children("button")[1].style.visibility="visible";
         //window.alert($(this).attr("id"))
       });
     $(".vidItem").mouseleave(
@@ -327,7 +336,8 @@ function updateTable(){
       	$(this).children("span").children('div')[0].style.width="90%"
         $(this).addClass("ui-state-default");
         $(this).removeClass("ui-state-hover");
-        $(this).children("span").children("button")[0].style.visibility="hidden";
+        $(this).children("span").children("button")[0].style.visibility="hidden";        
+        $(this).children("span").children("button")[1].style.visibility="hidden";
       });
      ///////////////////////////////////////
 
@@ -346,22 +356,35 @@ function updateTable(){
     $( "#timeSeek" ).slider({
 			orientation: "horizontal",
 			range: "min",
-			max: 255,
-			value: 0,
 			start: function(event, ui){
 				updateTime = 0;
 				console.log("started")
 			},
 			stop: function(event, ui){
 				updateTime = 1;
-				chrome.runtime.sendMessage({
+				chrome.tabs.sendMessage(tabId,{
 					type: "seekVideo",
 					"info": ui.value
 				})
 				console.log("ended, seeking to:"+ui.value);
+			},
+			slide: function(event, ui){
+				$("#timeCurrent").html(prettyTime(ui.value))
 			}
 	});
-	setSeekbar(back.vidDuration);
+
+    getTimeInfo()
+    setInterval(getTimeInfo,1000)
+}
+
+function getTimeInfo(){
+	console.log("calling for")
+	chrome.tabs.sendMessage(tabId,
+			{type:"getTime"},
+			function(response){
+				updateSeekbar(response);
+			}
+		);
 }
 
 

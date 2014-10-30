@@ -28,6 +28,7 @@ $(function() {
 
 	$( "#tabs" ).tabs({
     	"active":1,
-    	activate:tabChanged,
+    	activate:tabChanged,    	
+		//show: { effect: "blind", duration: 1000 }
    	});
 });
