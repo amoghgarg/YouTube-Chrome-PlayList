@@ -27,6 +27,22 @@ function tabCreated(tab){
 };
 
 chrome.tabs.onRemoved.addListener(tabClosed);
+chrome.identity.getAuthToken({interactive:true}, function(token){
+	if(token){
+		var firstAuth;
+		if(authToken==''){
+			firstAuth = true;
+		}
+		authToken = token;
+		loggedIn = true;
+		if(firstAuth){
+			updateListList();
+			chrome.runtime.sendMessage({
+				type:"loadingLists"
+			})
+		}
+	}
+})
 
 
 function tabClosed(tabIdin, info){
@@ -247,6 +263,18 @@ chrome.runtime.onMessage.addListener(
 				};
 				vidLinks.push(toAdd);
 				chrome.runtime.sendMessage({type:"vidLinksUp", status:0, from:"searchAdd"})
+				break;
+			case "addPlayVideo":
+				var toAdd = {
+					"link" : request.link,
+					"name" : request.name
+				};
+				vidLinks.push(toAdd);
+				chrome.runtime.sendMessage({
+					type:"songChanged",
+					"newInd": vidLinks.length-1
+				});				
+				chrome.runtime.sendMessage({type:"vidLinksUp", status:0, from:"searchAddPlay"})
 				break;
 			case "durationInfo":
 				vidDuration = request.info;

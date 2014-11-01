@@ -6,7 +6,7 @@ var listInd;
 var noticeText = "Empty Queue!<br><a id = \"openSearch\">Search</a> YouTube or choose a <a id = \"openPlaylist\">playlist</a>"
 var updateTime = 1;
 var tabId; 
-var muted;
+var muted = false;
 
 function setNotice(){
 	$("#notice").html(noticeText);
@@ -185,7 +185,6 @@ function clearQueue(){
 	// $("#saveButton")[0].style.visibility="hidden"
 	$("#saveButton").hide();
 	setNotice()
-	//updateTable();
 };
 
 
@@ -223,6 +222,7 @@ function shuffleToggled(event, ui){
 
 
 function updateSeekbar(response){
+	console.log(response)
 	if(updateTime){
 		$("#timeCurrent").html(prettyTime(response.current));
 		$("#timeDuration").html(prettyTime(response.duration))
@@ -230,6 +230,8 @@ function updateSeekbar(response){
 		$("#timeSeek").slider("option","max",response.duration);
 		$("#volumeSeek").slider("option","value",response.volume)
 		muted = response.muted
+		showMuteIcon()
+		updateVolumeIcon(response.volume)
 	}
 }
 
@@ -404,7 +406,7 @@ function updateTable(){
 	})
 
 
-	$("#volume").click(function(){
+	$("#volume, #muteIcon").click(function(){
 		muted = !muted;
 		showMuteIcon();
 		chrome.tabs.sendMessage(tabId,
@@ -416,18 +418,17 @@ function updateTable(){
 	})
 
     getTimeInfo()
-    setInterval(getTimeInfo,1000)
+   setInterval(getTimeInfo,1000)
 }
 
 function updateVolumeIcon(level){
-	showMuteIcon()
 	if(!muted){
-		if(level>=0.7){
+		if(level>=0.5){
 			$("#volume").removeClass("fa-volume-down")
 			$("#volume").removeClass("fa-volume-off")
 			$("#volume").addClass("fa-volume-up")
 		}
-		else if(level>0.3){
+		else if(level>0.2){
 			$("#volume").removeClass("fa-volume-up")
 			$("#volume").removeClass("fa-volume-off")
 			$("#volume").addClass("fa-volume-down")

@@ -55,7 +55,7 @@ chrome.runtime.onMessage.addListener(
 			case "muteVolume":
 				console.log("Mute Request Received");
 				currentVid.muted = !currentVid.muted
-				breaks;
+			break;
 		}
 	}
 );

@@ -81,21 +81,23 @@ function searchVidLeave(event, ui){
 
 function addOnlyCall(event, ui){
 	ind = $(this).parent().parent().attr("id");
-	informBGPage(ind);
-}
-
-function addPlayCall(event, ui){
-	ind = $(this).parent().parent().attr("id");
-	informBGPage(ind);
-}
-
-function informBGPage(ind){
 	chrome.runtime.sendMessage({
 		"type" : "addVideo",
 		"link" : serResults[ind].link,
 		"name" : serResults[ind].name
 	})
 }
+
+function addPlayCall(event, ui){
+	ind = $(this).parent().parent().attr("id");
+	chrome.runtime.sendMessage({
+		"type" : "addPlayVideo",
+		"link" : serResults[ind].link,
+		"name" : serResults[ind].name
+	})
+}
+
+
 
 
 chrome.runtime.onMessage.addListener( 
