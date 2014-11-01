@@ -294,6 +294,13 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     cursor: pointer;
 }
 
+#muteIcon{
+	position: absolute;
+	top: 6px;
+	left: 15px;
+	font-size: 7.5pt;
+}
+
 #newPlaylistButton{
 	background-color: #c4302b;
 	height: 38px;

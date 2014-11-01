@@ -5,7 +5,8 @@ var nowPlay;
 var listInd;
 var noticeText = "Empty Queue!<br><a id = \"openSearch\">Search</a> YouTube or choose a <a id = \"openPlaylist\">playlist</a>"
 var updateTime = 1;
-var tabId
+var tabId; 
+var muted;
 
 function setNotice(){
 	$("#notice").html(noticeText);
@@ -227,6 +228,8 @@ function updateSeekbar(response){
 		$("#timeDuration").html(prettyTime(response.duration))
 		$("#timeSeek").slider("option","value",response.current);
 		$("#timeSeek").slider("option","max",response.duration);
+		$("#volumeSeek").slider("option","value",response.volume)
+		muted = response.muted
 	}
 }
 
@@ -382,6 +385,8 @@ function updateTable(){
 			change: function(event, ui){
 				updateTime = 1;
 				updateVolumeIcon(ui.value)
+			},
+			stop: function(event, ui){
 				chrome.tabs.sendMessage(tabId,{
 					type: "seekVolume",
 					"info": ui.value
@@ -389,38 +394,70 @@ function updateTable(){
 			}
 	});
 
-	$("#volume").mouseenter(
+	$("#volumeArea").mouseenter(
 		function(){
 		$("#volumeSeek").css("width","50px")
 	})
 
-	$("#volumeArea").mouseleave(
-		function(){
+	$("#volumeArea").mouseleave(function(){
 		$("#volumeSeek").css("width","0px")
 	})
 
 
-	$()
+	$("#volume").click(function(){
+		muted = !muted;
+		showMuteIcon();
+		chrome.tabs.sendMessage(tabId,
+			{type:"muteVolume"},
+			function(response){
+				updateSeekbar(response);
+			}
+		);
+	})
 
     getTimeInfo()
     setInterval(getTimeInfo,1000)
 }
 
 function updateVolumeIcon(level){
-	if(level>=0.5){
-		$("#volume").removeClass("fa-volume-down")
-		$("#volume").removeClass("fa-volume-off")
-		$("#volume").addClass("fa-volume-up")
-	}
-	else if(level>0.3){
-		$("#volume").removeClass("fa-volume-up")
-		$("#volume").removeClass("fa-volume-off")
-		$("#volume").addClass("fa-volume-down")
+	showMuteIcon()
+	if(!muted){
+		if(level>=0.7){
+			$("#volume").removeClass("fa-volume-down")
+			$("#volume").removeClass("fa-volume-off")
+			$("#volume").addClass("fa-volume-up")
+		}
+		else if(level>0.3){
+			$("#volume").removeClass("fa-volume-up")
+			$("#volume").removeClass("fa-volume-off")
+			$("#volume").addClass("fa-volume-down")
+		}
+		else{
+			$("#volume").removeClass("fa-volume-down")
+			$("#volume").removeClass("fa-volume-up")
+			$("#volume").addClass("fa-volume-off")
+		}
 	}
 	else{
+		$("#muteIcon").css("visibility","visible")		
 		$("#volume").removeClass("fa-volume-down")
 		$("#volume").removeClass("fa-volume-up")
 		$("#volume").addClass("fa-volume-off")
+	}
+}
+
+function showMuteIcon(){
+	if(muted){
+		$("#muteIcon").css("visibility","visible")	
+		$("#volume").removeClass("fa-volume-down")
+		$("#volume").removeClass("fa-volume-up")
+		$("#volume").addClass("fa-volume-off")		
+	}
+	else{
+		$("#muteIcon").css("visibility","hidden")	
+		$("#volume").removeClass("fa-volume-down")
+		$("#volume").removeClass("fa-volume-up")
+		$("#volume").addClass("fa-volume-off")	
 	}
 }
 

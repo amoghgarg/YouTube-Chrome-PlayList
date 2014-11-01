@@ -40,7 +40,8 @@ chrome.runtime.onMessage.addListener(
 				sendResponse({
 					current:Math.round(currentVid.currentTime),
 					duration:Math.round(currentVid.duration),
-					volume:currentVid.volume
+					volume:currentVid.volume,
+					muted:currentVid.muted
 				})
 				break;
 			case "seekVideo":
@@ -50,6 +51,11 @@ chrome.runtime.onMessage.addListener(
 			case "seekVolume":
 				console.log("Volume Change Requested:"+request.info)
 				currentVid.volume = request.info
+				break;
+			case "muteVolume":
+				console.log("Mute Request Received");
+				currentVid.muted = !currentVid.muted
+				breaks;
 		}
 	}
 );
