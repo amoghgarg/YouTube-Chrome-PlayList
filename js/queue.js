@@ -52,18 +52,10 @@ function showWaitQ(input){
 function playClicked(){
 
 	if(currentLength>0){
-		// $( "#play" ).button({
-	 //      text: false,
-	 //      icons: {
-	 //      	primary: "fa fa-pause fa-2x"
-  //     	  }
-  //   	});
 		setToPause();
-		
-		
-
 		back = chrome.extension.getBackgroundPage();
 		tabId = back.tabId;
+
 		nowPlay = back.vidInd;
 
 		if( !nowPlay || nowPlay==-1){
@@ -317,7 +309,15 @@ function updateTable(){
     		setNotice();
     	}
     });
+
     $(".similar").click(function(){
+    	showRelated  = 0;		
+    	showWaitSearch();
+		chrome.runtime.sendMessage({
+				type:"searchRelated",
+				videoId:$(this).parent().parent().attr("id")
+
+		})
 		$( "#tabs" ).tabs({
 			"active":2,
 		});
@@ -356,9 +356,10 @@ function updateTable(){
     $( "#timeSeek" ).slider({
 			orientation: "horizontal",
 			range: "min",
+			value: 0,
+			max: 0,
 			start: function(event, ui){
 				updateTime = 0;
-				console.log("started")
 			},
 			stop: function(event, ui){
 				updateTime = 1;
@@ -366,25 +367,71 @@ function updateTable(){
 					type: "seekVideo",
 					"info": ui.value
 				})
-				console.log("ended, seeking to:"+ui.value);
 			},
 			slide: function(event, ui){
 				$("#timeCurrent").html(prettyTime(ui.value))
 			}
 	});
 
+	$( "#volumeSeek" ).slider({
+			orientation: "horizontal",
+			range: "min",
+			value: 30,
+			max: 100,
+			change: function(event, ui){
+				updateTime = 1;
+				updateVolumeIcon(ui.value)
+				chrome.tabs.sendMessage(tabId,{
+					type: "seekVolume",
+					"info": ui.value
+				})
+			}
+	});
+
+	$("#volume").mouseenter(
+		function(){
+		$("#volumeSeek").css("width","50px")
+	})
+
+	$("#volumeArea").mouseleave(
+		function(){
+		$("#volumeSeek").css("width","50px")
+	})
+
+
+	$()
+
     getTimeInfo()
     setInterval(getTimeInfo,1000)
 }
 
+function updateVolumeIcon(level){
+	if(level>=50){
+		$("#volume").removeClass("fa-volume-down")
+		$("#volume").removeClass("fa-volume-off")
+		$("#volume").addClass("fa-volume-up")
+	}
+	else if(level>33){
+		$("#volume").removeClass("fa-volume-up")
+		$("#volume").removeClass("fa-volume-off")
+		$("#volume").addClass("fa-volume-down")
+	}
+	else{
+		$("#volume").removeClass("fa-volume-down")
+		$("#volume").removeClass("fa-volume-up")
+		$("#volume").addClass("fa-volume-off")
+	}
+}
+
 function getTimeInfo(){
-	console.log("calling for")
-	chrome.tabs.sendMessage(tabId,
-			{type:"getTime"},
-			function(response){
-				updateSeekbar(response);
-			}
-		);
+	if(tabId){
+		chrome.tabs.sendMessage(tabId,
+				{type:"getTime"},
+				function(response){
+					updateSeekbar(response);
+				}
+			);
+	}
 }
 
 
@@ -444,12 +491,9 @@ chrome.runtime.onMessage.addListener(
 				$("#"+clicked).removeClass('ui-state-default');
 				nowPlay = clicked;
 				break;
-			case "timeInfo":
-				updateSeekbar(request.info);
-				break;
-			case "durationInfo":
-				console.log("Duration changed signal received.")
-				setSeekbar(request.info);
+			case "tabCreated":
+				tabId = request.tabId
+				console.log("Tab ID Update to:"+tabId)
 				break;
 		}
 	}

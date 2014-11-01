@@ -9,10 +9,6 @@ function searchClicked(){
 		text:$("#inputSearch").val()
 	})
 
-	chrome.runtime.sendMessage({
-				type:"searchQueryonScroll",
-				nextType:resultState,
-			});
 }
 
 function hideWaitSearch(){
@@ -53,7 +49,7 @@ $(function(){
 function displayResults(input){
 	var text = "";
 	for(var i = 0; i<serResults.length; i++){
-		text = text + "<div class=\"searchedVid\" id=\""+i+"\"><img src = \""+serResults[i].thumbNail+"\"><div id='text'>" + serResults[i].name+"</div></div>";
+		text = text + "<div class=\"searchedVid\" id=\""+i+"\"><span><img src = \""+serResults[i].thumbNail+"\"></span><span><div id='text' >" + serResults[i].name+"</div></span><span><button class=\"fa fa-play-circle fa-2x addPlay\" z-index=\"1000\"></button><button title=\"Similar Songs\" class=\"fa fa-plus-circle fa-2x addOnly\"></button></span></div>";
 	}
 	text += "</br>"
 
@@ -66,12 +62,34 @@ function displayResults(input){
 	// $("#resultsDisp").show()
 
 	
-	$(".searchedVid").click(searchVidSel);
+	$(".searchedVid").mouseenter(searchVidEnter);
+	$(".searchedVid").mouseleave(searchVidLeave);
+	$(".addOnly").click(addOnlyCall);
+	$(".addPlay").click(addPlayCall)
 	hideWaitSearch()
 }
 
-function searchVidSel(event, ui){
-	ind = $(this).attr("id")
+function searchVidEnter(event, ui){
+	$(this).children("span").children("button")[0].style.visibility="visible";        
+    $(this).children("span").children("button")[1].style.visibility="visible";
+}
+
+function searchVidLeave(event, ui){
+	$(this).children("span").children("button")[0].style.visibility="hidden";        
+    $(this).children("span").children("button")[1].style.visibility="hidden";
+}
+
+function addOnlyCall(event, ui){
+	ind = $(this).parent().parent().attr("id");
+	informBGPage(ind);
+}
+
+function addPlayCall(event, ui){
+	ind = $(this).parent().parent().attr("id");
+	informBGPage(ind);
+}
+
+function informBGPage(ind){
 	chrome.runtime.sendMessage({
 		"type" : "addVideo",
 		"link" : serResults[ind].link,
@@ -92,6 +110,7 @@ chrome.runtime.onMessage.addListener(
 				serResults = request.results;
 				resultState = "related";
 				displayResults("clear");
+				showRelated = 1;
 			break;
 			case "scrollResUp":
 				serResults.push.apply(serResults, request.results);

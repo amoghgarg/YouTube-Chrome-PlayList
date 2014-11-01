@@ -20,10 +20,13 @@ var vidDuration = 0;
 function tabCreated(tab){
 	tabId = tab.id;
 	chrome.tabs.executeScript(tab.id, {file:"js/inject.js"})
+	chrome.runtime.sendMessage({
+		type:"tabCreated",
+		tabId:tabId
+	})
 };
 
 chrome.tabs.onRemoved.addListener(tabClosed);
-makeRequest({"type":"auth", "life":2, "first":1});	
 
 
 function tabClosed(tabIdin, info){
@@ -235,10 +238,7 @@ chrome.runtime.onMessage.addListener(
 				makeRequest({"type":"searchQuery", "life":2, "query":request.text})
 				break
 			case "searchRelated":
-				makeRequest({"type":"searchRelated", "life":2})
-				break;
-			case "searchQueryonScroll":
-				makeRequest({"type":"searchQueryonScroll", "nextType":request.nextType})
+				makeRequest({"type":"searchRelated", "life":2, "videoID":request.videoId})
 				break;
 			case "addVideo":
 				var toAdd = {
@@ -249,7 +249,6 @@ chrome.runtime.onMessage.addListener(
 				chrome.runtime.sendMessage({type:"vidLinksUp", status:0, from:"searchAdd"})
 				break;
 			case "durationInfo":
-				console.log("Duration received:"+request.info)
 				vidDuration = request.info;
 				break;
 		}
@@ -354,7 +353,6 @@ function postRequest(input){
 
 	xmlhttp.onreadystatechange=function(){
 		if(xmlhttp.readyState==4){
-			console.log("response: " + xmlhttp.status)
 			switch (xmlhttp.status){
 			case 401:
 				makeRequest({"type":"auth", "life":1});					
@@ -377,7 +375,6 @@ function postRequest(input){
 						parseCreatePlaylistJSON(xmlhttp.response)
 						break
 					case "addToPlayList":
-						console.log(input.count + xmlhttp.response)
 						if(input.count==1){
 							chrome.runtime.sendMessage({
 								type:"listUpdated"
@@ -447,27 +444,24 @@ function makeRequest(input){
 			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&fields=etag&access_token="+authToken;
 			break;
 		case "searchQuery":
-			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q="
+			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&q="
 			url = url + encodeURIComponent(input.query);
 			lastQuerry = encodeURIComponent(input.query);
-			url = url + "&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))%2CnextPageToken&key="+publicKey;
+			url = url + "&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))&key="+publicKey;
 			break;
 		case "searchRelated":
-			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId="
-			url = url + vidLinks[vidInd].link
-			lastVideoID = vidLinks[vidInd].link
-			url = url + "&type=video&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))%2CnextPageToken&key="+publicKey;
-			break;
-		case "searchQueryonScroll":
-			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&pageToken="
-			url = url + searchNextPageToken
-			if(input.nextType=="query"){
-				url = url + "&q=" + lastQuerry;
+			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=30&relatedToVideoId="
+			var tempInd;
+			if(input.videoID=="nowPlaying"){
+				tempInd = vidInd;
 			}
-			else if(input.nextType=="related"){
-				url = url + "&relatedToVideoId=" + lastVideoID;
+			else{
+				tempInd = input.videoID
 			}
-			url = url + "&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))%2CnextPageToken&key="+publicKey;
+
+			url = url + vidLinks[tempInd].link
+			lastVideoID = vidLinks[tempInd].link
+			url = url + "&type=video&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))&key="+publicKey;
 			break;
 	}
 
@@ -516,8 +510,6 @@ function makeRequest(input){
 						case "searchRelated":
 							parseSearchJSON({"type":"related", "text":xmlhttp.response});
 							break;
-						case "searchQueryonScroll":
-							parseSearchJSON({"type":"scroll", "text":xmlhttp.response})
 					}
 					break;
 			}

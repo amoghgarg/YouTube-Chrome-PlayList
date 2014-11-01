@@ -49,7 +49,7 @@ hr {
 
 
 #tabPlaylistContent {
-	height: 304px;
+	height: 370px;
 }
 
  #queueSortable {
@@ -68,31 +68,33 @@ hr {
 }
 
 
-#queueSortable::-webkit-scrollbar, #resultsDisp::-webkit-scrollbar{
+#tabPlaylistContent::-webkit-scrollbar, #queueSortable::-webkit-scrollbar, #resultsDisp::-webkit-scrollbar{
     width:8px;
     background-color:transparent;   
     border-right:none;
 }
 
-#queueSortable::-webkit-scrollbar-track, #resultsDisp::-webkit-scrollbar-track{
+#tabPlaylistContent::-webkit-scrollbar-track, #queueSortable::-webkit-scrollbar-track, #resultsDisp::-webkit-scrollbar-track{
     background-color:transparent;
     width:8px;
     border:none;     
     border-right:none;
 }
 
-#queueSortable::-webkit-scrollbar-thumb, #resultsDisp::-webkit-scrollbar-thumb{
+#tabPlaylistContent::-webkit-scrollbar-thumb, #queueSortable::-webkit-scrollbar-thumb, #resultsDisp::-webkit-scrollbar-thumb{
     background-color:#c0c0c0;
     width:8px;
     border:none;     
     border-right:none;
 }
-#queueSortable::-webkit-scrollbar-thumb:hover, #resultsDisp::-webkit-scrollbar-thumb:hover{
+
+#tabPlaylistContent::-webkit-scrollbar-thumb:hover, #queueSortable::-webkit-scrollbar-thumb:hover, #resultsDisp::-webkit-scrollbar-thumb:hover{
     background-color: #c4302b;
     border-right:none;
     width:8px;
 }
-#queueSortable::-webkit-scrollbar-thumb:active, #resultsDisp::-webkit-scrollbar-thumb:active{
+
+#tabPlaylistContent::-webkit-scrollbar-thumb:active, #queueSortable::-webkit-scrollbar-thumb:active, #resultsDisp::-webkit-scrollbar-thumb:active{
     background-color: #c4302b;  
     width:8px;    
     border-right:none;
@@ -191,7 +193,6 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     margin-top: 0;
 }
 #resultsDisp .searchedVid {
-    cursor: pointer;
     height: 60px;
     padding: 0 5px;
     box-sizing: border-box;
@@ -200,7 +201,6 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 }
 
 #resultsDisp .searchedVid:hover {
-    cursor:pointer;
     background-color: #EDEDED;
     height: 60px;
     z-index: 5;
@@ -223,6 +223,27 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     line-height: 1.5em;
     height: 3em;      
     overflow: hidden;
+}
+
+#resultsDisp .addPlay, #resultsDisp .addOnly{
+	float:right;
+	position:relative;
+	padding: 0;
+	border:0;
+	background: none;
+	font-size: 2em;
+	bottom: 70px;
+	visibility: hidden;
+	outline: none;
+	cursor: pointer;
+}
+
+#resultsDisp .addPlay{
+	right: 12px;
+}
+
+#resultsDisp .addOnly{
+	right: 20px;
 }
 
 #playlistList .ui-state-default, #queueSortable .ui-state-default{
@@ -287,6 +308,26 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	font-family: 'Open Sans Light';
 }
 
+#loginButton{
+	background-color: #c4302b;
+	height: 38px;
+	line-height: 38px;
+	width: 94px;
+	text-align: center;
+	color: white;
+	border-radius: 2px;
+	margin: 0 auto;
+	cursor: pointer;
+	margin-top: 10px;
+	font-family: 'Open Sans Light';
+	position: fixed;
+	height: 50px;
+	top: 50%;
+	left: 50%;
+	width: 127px;
+	transform: translate(-50%,-50%)
+}
+
 
 #cancelSaveButton{
     background-size: 20px 20px;
@@ -349,7 +390,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
  	color: #c4302b;
  }
 
- .delPlay, .similar, .remove{
+ .delPlay, .similar, .remove, .addPlay, .addOnly, #volume{
  	font-family: 'FontAwesome';
  }
 
@@ -406,10 +447,23 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	font-size: 14pt;
 }
 
+#volumeArea{
+	width: 86px;
+	height: 24px;
+	position: fixed;
+	left: 4px;
+}
+
+#volume{
+	position: absolute;
+	left: 1px;
+	top: 1px;
+	font-size: 13pt;
+}
+
 #choiceText{
     text-align: center;
-    padding: 1em;
-    padding-bottom: 0em;
+    padding-bottom: 1newem;
 }
 
 #noticePl{
@@ -520,6 +574,22 @@ input[type="text"]:focus {
 	}
 }
 
+#volumeSeek{
+	cursor: pointer;
+	float: left;
+	clear: left;
+	height:4px;
+	margin: 0px;
+	border:none;
+	position: absolute;
+	width: 0px;
+	top: 9px;
+	left: 30%;
+	background:gray;
+	-webkit-transform: width(100%);
+	-webkit-transition: 0.3s;
+}
+
 #timeSeek{
 	cursor: pointer;
 	float: left;
@@ -535,13 +605,19 @@ input[type="text"]:focus {
 	background:gray;
 }
 
-#timeSeek .ui-slider-range { 
+#volumeSeek .ui-slider-handle{ 
+	width: 0px;
+	height: 0px;
+}
+
+#volumeSeek .ui-slider-range, #timeSeek .ui-slider-range { 
 	height:4px;
 	background: #c4302b; 
 	border:none;
 	outline:none;
 	border-radius: 0;
 }
+
 #timeSeek .ui-slider-handle { 
 	width: 10px;
 	height: 10px;
@@ -549,15 +625,16 @@ input[type="text"]:focus {
 	border:none;
 	outline:none;
 	border-radius: 50%;
-	background: black;
+	background: #212121;
 	top:-3px;
 	margin:0;
 	cursor: pointer;
 }
+
 #timeSeek .ui-slider-handle:active { 
 	border-color: #ef2929; 
 	border:none;
-	background: black;
+	background: #212121;
 	outline:none;
 	border-radius: 50%
 }

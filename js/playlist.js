@@ -44,6 +44,7 @@ function showWaitPL(input){
 }
 
 function updateLoginSpan(){
+	$("#tabPlaylistContent").css("height","370px")
 	back = chrome.extension.getBackgroundPage();
 	if(back.loggedIn){		
 		//window.alert("Logged in")
@@ -170,6 +171,7 @@ function addToPlaylist(event, ui){
 }
 
 function saveQueue(){
+	$("#tabPlaylistContent").css("height", "227px")
 	$( "#tabs" ).tabs({"active":0});
 	var text = "<input type=\"text\" id=\"playListName\" placeholder=\"Save to a new playlist...\" >";
 	text = text + "<div id=\"newPlaylistButton\">Save</div>"

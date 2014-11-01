@@ -1,6 +1,7 @@
 var queueWaitLoop;
 var playlistWaitLoop;
 var searchWaitLoop
+var showRelated = 1;
 function tabChanged(event, ui){
 	if(ui.newPanel.selector!="#tabQueue"){
 		$('#saveFooter').hide();
@@ -12,10 +13,11 @@ function tabChanged(event, ui){
 		updateLoginSpan()
 	}
 	if(ui.newPanel.selector=="#tabSearch"){
-		if(chrome.extension.getBackgroundPage().playing){
+		if(chrome.extension.getBackgroundPage().playing & showRelated){
 			showWaitSearch({type:"suggested"})
 			chrome.runtime.sendMessage({
-				type:"searchRelated"
+				type:"searchRelated",
+				videoId:"nowPlaying"
 			})
 		}
 		setTimeout(function(){
@@ -28,7 +30,6 @@ $(function() {
 
 	$( "#tabs" ).tabs({
     	"active":1,
-    	activate:tabChanged,    	
-		//show: { effect: "blind", duration: 1000 }
+    	activate:tabChanged,
    	});
 });
