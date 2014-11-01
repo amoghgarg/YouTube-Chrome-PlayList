@@ -377,7 +377,8 @@ function updateTable(){
 			orientation: "horizontal",
 			range: "min",
 			value: 30,
-			max: 100,
+			max: 1,
+			step: 0.1,
 			change: function(event, ui){
 				updateTime = 1;
 				updateVolumeIcon(ui.value)
@@ -395,7 +396,7 @@ function updateTable(){
 
 	$("#volumeArea").mouseleave(
 		function(){
-		$("#volumeSeek").css("width","50px")
+		$("#volumeSeek").css("width","0px")
 	})
 
 
@@ -406,12 +407,12 @@ function updateTable(){
 }
 
 function updateVolumeIcon(level){
-	if(level>=50){
+	if(level>=0.5){
 		$("#volume").removeClass("fa-volume-down")
 		$("#volume").removeClass("fa-volume-off")
 		$("#volume").addClass("fa-volume-up")
 	}
-	else if(level>33){
+	else if(level>0.3){
 		$("#volume").removeClass("fa-volume-up")
 		$("#volume").removeClass("fa-volume-off")
 		$("#volume").addClass("fa-volume-down")

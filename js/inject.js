@@ -39,13 +39,17 @@ chrome.runtime.onMessage.addListener(
 				console.log("Request Recieved.")
 				sendResponse({
 					current:Math.round(currentVid.currentTime),
-					duration:Math.round(currentVid.duration)
+					duration:Math.round(currentVid.duration),
+					volume:currentVid.volume
 				})
 				break;
 			case "seekVideo":
 				console.log("seeking video")
 				currentVid.currentTime = request.info;
 				break;
+			case "seekVolume":
+				console.log("Volume Change Requested:"+request.info)
+				currentVid.volume = request.info
 		}
 	}
 );
