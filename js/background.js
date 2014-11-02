@@ -27,7 +27,7 @@ function tabCreated(tab){
 };
 
 chrome.tabs.onRemoved.addListener(tabClosed);
-chrome.identity.getAuthToken({interactive:true}, function(token){
+chrome.identity.getAuthToken({interactive:false}, function(token){
 	if(token){
 		var firstAuth;
 		if(authToken==''){
