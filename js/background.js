@@ -170,6 +170,7 @@ chrome.runtime.onMessage.addListener(
 						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 						active:false,
 					});
+					playing = true;
 					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 				}			
 				chrome.browserAction.setIcon({path:"img/iconCol.png"});
