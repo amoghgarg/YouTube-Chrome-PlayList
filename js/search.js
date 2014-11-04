@@ -49,7 +49,7 @@ $(function(){
 function displayResults(input){
 	var text = "";
 	for(var i = 0; i<serResults.length; i++){
-		text = text + "<div class=\"searchedVid\" id=\""+i+"\"><span><img src = \""+serResults[i].thumbNail+"\"></span><span><div id='text' >" + serResults[i].name+"</div></span><span><button class=\"fa fa-play-circle fa-2x addPlay\" z-index=\"1000\"></button><button title=\"Similar Songs\" class=\"fa fa-plus-circle fa-2x addOnly\"></button></span></div>";
+		text = text + "<div class=\"searchedVid\" id=\""+i+"\"><span><img src = \""+serResults[i].thumbNail+"\"></span><span><div id='text' >" + serResults[i].name+"</div></span><span><button title=\"Add to Queue and Play\" class=\"fa fa-play-circle fa-2x addPlay\" z-index=\"1000\"></button><button title=\"Add to Queue\" class=\"fa fa-plus-circle fa-2x addOnly\"></button></span></div>";
 	}
 	text += "</br>"
 

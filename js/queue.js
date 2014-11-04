@@ -14,6 +14,7 @@ function setNotice(){
 	$("#leftButtons").hide();
 	$("#rightButtons").hide();
 	$("#clear").hide();
+	$("#radio").hide();
 	$('hr').hide();
 	$("#openSearch").click(function(){
 		$( "#tabs" ).tabs({"active":2});
@@ -205,24 +206,64 @@ function prettyTime(input){
 
 function shuffleToggled(event, ui){
 	var temp;
-	if( $("#shuffle.checked").length==1 ){
-		$("#shuffle").removeClass("checked");
+
+	if( $("#radio.checked").length==1 ){
+		window.alert("Disable Radio Mode to enable Shuffle.")
+	}
+	else{
+		if( $("#shuffle.checked").length==1 ){
+			$("#shuffle").removeClass("checked");
+			temp = 0;
+		}
+		else{
+			$("#shuffle").addClass("checked");
+			temp = 1;
+		}
+		chrome.runtime.sendMessage({
+			type:"shuffle",
+			shuffle:temp
+		})
+	}	
+}
+
+function loopToggled(event, ui){
+	var temp;
+	if( $("#loop.checked").length==1 ){
+		$("#loop").removeClass("checked");
 		temp = 0;
 	}
 	else{
-		$("#shuffle").addClass("checked");
+		$("#loop").addClass("checked");
 		temp = 1;
 	}
 	chrome.runtime.sendMessage({
-		type:"shuffle",
-		shuffle:temp
+		type:"loop",
+		loop:temp
+	})
+}
+
+function radioToggled(event, ui){
+	var temp;
+	if( $("#radio.checked").length==1 ){
+		$("#radio").removeClass("checked");
+		temp = 0;
+	}
+	else{
+		$("#radio").addClass("checked");
+		temp = 1;
+		if( $("#shuffle.checked").length==1 ){
+			$("#shuffle").removeClass("checked");
+		}
+	}
+	chrome.runtime.sendMessage({
+		type:"radio",
+		radio:temp
 	})
 }
 
 
 
 function updateSeekbar(response){
-	console.log(response)
 	if(updateTime){
 		$("#timeCurrent").html(prettyTime(response.current));
 		$("#timeDuration").html(prettyTime(response.duration))
@@ -242,7 +283,9 @@ function updateTable(){
 	nowPlay = back.vidInd;
 	currentLength = vidLinks.length;
 	shuffleState = back.shuffle;
+	loopState = back.loop;
 	tabId = back.tabId;
+	radioState = back.radio;
 
 	if(back.loggedIn){
 		if(currentLength>0){
@@ -250,11 +293,13 @@ function updateTable(){
 			$("#saveButton").show();
 			$("#leftButtons").show();
 			$("#rightButtons").show();
+			$("#radio").show();
 			$("#clear").show();
 		}
 		else{
 			// $("#saveButton")[0].style.visibility = "hidden";
 			$("#saveButton").hide();
+			$("#radio").hide();
 		}
 	}
 	else{
@@ -271,8 +316,18 @@ function updateTable(){
 	document.getElementById("clear").onclick=clearClicked;
 	document.getElementById("shuffle").checked = shuffleState;
 	document.getElementById("shuffle").onclick=shuffleToggled;
+	document.getElementById("loop").checked = loopState;
+	document.getElementById("loop").onclick=loopToggled;
+	document.getElementById("radio").checked = radioState;
+	document.getElementById("radio").onclick=radioToggled;
 	if(shuffleState){
 		$("#shuffle").addClass("checked");
+	}
+	if(loopState){
+		$("#loop").addClass("checked");
+	}
+	if(radioState){
+		$("#radio").addClass("checked");
 	}
 
 	//$("#test").click( testFunction);
@@ -532,7 +587,6 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case "tabCreated":
 				tabId = request.tabId
-				console.log("Tab ID Update to:"+tabId)
 				break;
 		}
 	}

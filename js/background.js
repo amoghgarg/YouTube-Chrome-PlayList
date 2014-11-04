@@ -13,7 +13,9 @@ var searchNextPageToken;
 var publicKey = "AIzaSyAz5ndOWI74hpgbrC9IZJmx-YxyLehdgl0";
 var lastVideoID
 var lastQuerry
-var shuffle
+var shuffle  
+var loop
+var radio
 var vidDuration = 0;
 
 
@@ -53,6 +55,14 @@ function tabClosed(tabIdin, info){
 	}
 }
 
+
+function radioAdd(){
+	console.log(vidInd+"_:_"+vidLinks.length-1)
+	if(vidInd==vidLinks.length-1){
+		makeRequest({"type":"getRadioVideo", "life":2, "videoID":vidLinks[vidInd].link})
+	}
+}
+
 chrome.runtime.onMessage.addListener( 
 	function(request,sender,sendResponse){
 		switch(request.type){
@@ -80,6 +90,18 @@ chrome.runtime.onMessage.addListener(
 				playing = true;
 				if(vidInd==vidLinks.length){
 					vidInd=0;
+					if(!loop){
+						playing = false;
+						break;
+					}
+					if(radio){
+						radioAdd();
+					}
+				}
+				if(vidInd==vidLinks.length-1){
+					if(radio){
+						radioAdd();
+					}
 				}
 				if(shuffle){
 					vidInd = Math.floor((Math.random() * vidLinks.length));
@@ -94,6 +116,7 @@ chrome.runtime.onMessage.addListener(
 				});
 				chrome.browserAction.setIcon({path:"img/iconCol.png"});
 				chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
+
 				break;	
 			case "pauseClicked":
 				chrome.browserAction.setIcon({path:"img/iconBw.png"});
@@ -121,6 +144,11 @@ chrome.runtime.onMessage.addListener(
 					});
 					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 					chrome.browserAction.setIcon({path:"img/iconCol.png"});
+
+					if(radio){
+						radioAdd();
+					}
+					console.log(radio)
 				}
 				else{
 					chrome.runtime.sendMessage(
@@ -134,6 +162,13 @@ chrome.runtime.onMessage.addListener(
 				break;
 			case "shuffle":
 				shuffle = request.shuffle;
+				break
+			case "loop":
+				loop = request.loop;
+				break
+			case "radio":
+				radio = request.radio;
+				if(shuffle){shuffle = 0;}
 				break
 			case "prevClicked":
 				if(playing){
@@ -181,6 +216,7 @@ chrome.runtime.onMessage.addListener(
 			    playing=false;
 			    console.log("Removing tab with id: "+tabId)
 				chrome.tabs.remove(tabId);
+				radio = 0;
 				break;
 			case "pausedFromWindow":
 				if(sender.tab.id==tabId){
@@ -490,8 +526,14 @@ function makeRequest(input){
 
 			url = url + vidLinks[tempInd].link
 			lastVideoID = vidLinks[tempInd].link
-			url = url + "&type=video&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))&key="+publicKey;
+			url = url + "&type=video&fields=items(id%2Csnippet(title%2Cthumbnails%2Fdefault%2Furl))&type=video&key="+publicKey;
 			break;
+		case "getRadioVideo":
+			url = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=15&relatedToVideoId="
+			url = url + input.videoID;
+			url = url + "&fields=items(id%2FvideoId%2Csnippet%2Ftitle)&type=video&key="+publicKey;
+			break;
+
 	}
 
 	var xmlhttp = new XMLHttpRequest();
@@ -539,11 +581,49 @@ function makeRequest(input){
 						case "searchRelated":
 							parseSearchJSON({"type":"related", "text":xmlhttp.response});
 							break;
+						case "getRadioVideo":
+							parseRadioJSON({"type":"radio", "text":xmlhttp.response})
 					}
 					break;
 			}
 		}		
 	}
+}
+
+function parseRadioJSON(input){
+	var obj = $.parseJSON(input.text);
+
+	for(i = 0; i<15; i++){
+		var randNum = Math.floor((Math.random() * 14.99));
+		linkTemp = obj.items[randNum].id.videoId;
+		if(!present(linkTemp)){
+			nameTemp = obj.items[randNum].snippet.title
+			break;
+		}		
+	}
+	
+	vidLinks.push({			
+		"link" : linkTemp,
+		"name" : nameTemp
+	});
+
+
+
+	chrome.runtime.sendMessage({type:"vidLinksUp", status:1, from:"radioAdd"})
+
+}
+
+function present(inLink){
+	tempCount = 0;
+	for (i=vidLinks.length-1; i>=0; i-- ){
+		tempCount=tempCount+1;
+		if(tempCount>10) break;
+		if(vidLinks[i].link==inLink){
+			return 1
+			break;
+		}
+	}
+	return 0;
 }
 
 

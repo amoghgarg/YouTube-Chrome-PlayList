@@ -386,18 +386,36 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
  }
 
 
- #shuffle{
+ #shuffle, #loop{
     position: fixed;
-    left: 89%;
     top: 16px;
     color: #4F4C4C;
     font-family: 'FontAwesome';
-    font-size: 12pt;
+    font-size: 11pt;
  }
 
- #shuffle.checked{
+ #shuffle, #loop{
+    position: fixed;
+    top: 16px;
+    color: #4F4C4C;
+    font-family: 'FontAwesome';
+    font-size: 11pt;
+ }
+
+
+
+ #shuffle{
+    left:85%;
+ }
+
+ #loop{
+ 	left:91%;
+ }
+
+ #shuffle.checked, #loop.checked{
  	color: #c4302b;
  }
+
 
  .delPlay, .similar, .remove, .addPlay, .addOnly, #volume{
  	font-family: 'FontAwesome';
@@ -439,6 +457,24 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     font-family: 'Open Sans Light';
  }
  #saveButton:hover{color: #292929;}
+
+
+ #radio{
+ 	cursor: pointer;
+	position: fixed;
+	color: #4F4C4C;
+	left: 51px;
+	bottom: 9px;
+	font-family: 'FontAwesome';
+	background: none;
+	border: none;
+	outline: none;
+ }
+
+ #radio.checked{
+ 	color: #c4302b;
+ }
+
 
 .willPlay, .willPause{
     font-family: 'FontAwesome';
