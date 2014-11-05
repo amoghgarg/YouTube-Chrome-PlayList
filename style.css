@@ -456,6 +456,10 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     bottom: 9px;
     font-family: 'Open Sans Light';
  }
+ #saveButton:before{
+ 	font-family: 'FontAwesome';
+ }
+
  #saveButton:hover{color: #292929;}
 
 
@@ -463,16 +467,21 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
  	cursor: pointer;
 	position: fixed;
 	color: #4F4C4C;
-	left: 51px;
+	left: 59px;
 	bottom: 9px;
-	font-family: 'FontAwesome';
-	background: none;
-	border: none;
-	outline: none;
+	font-family: 'Open Sans Light';
  }
+ #radio:before{
+ 	font-family: 'FontAwesome';
+ }
+ #radio:hover{color: #292929;}
 
  #radio.checked{
  	color: #c4302b;
+ }
+
+ #radioText{
+ 	font-family: 'Open Sans Light';
  }
 
 

@@ -57,7 +57,8 @@ function tabClosed(tabIdin, info){
 
 
 function radioAdd(){
-	console.log(vidInd+"_:_"+vidLinks.length-1)
+	console.log("_:_"+vidInd)
+	console.log("length:"+vidLinks.length)
 	if(vidInd==vidLinks.length-1){
 		makeRequest({"type":"getRadioVideo", "life":2, "videoID":vidLinks[vidInd].link})
 	}
@@ -83,7 +84,12 @@ chrome.runtime.onMessage.addListener(
 					);
 					chrome.browserAction.setIcon({path:"img/iconCol.png"});
 					playing = true;
-				}					
+				}				
+				if(vidInd==vidLinks.length-1){
+					if(radio){
+						radioAdd();
+					}
+				}	
 				break;
 			case "videoEnded":
 				vidInd++;
@@ -93,9 +99,6 @@ chrome.runtime.onMessage.addListener(
 					if(!loop){
 						playing = false;
 						break;
-					}
-					if(radio){
-						radioAdd();
 					}
 				}
 				if(vidInd==vidLinks.length-1){
@@ -131,6 +134,11 @@ chrome.runtime.onMessage.addListener(
 					if(vidInd==vidLinks.length){
 						vidInd=0;
 					}
+					if(vidInd==vidLinks.length-1){
+						if(radio){
+							radioAdd();
+						}
+					}
 					if(shuffle){
 						vidInd = Math.floor((Math.random() * vidLinks.length));
 					}
@@ -144,10 +152,6 @@ chrome.runtime.onMessage.addListener(
 					});
 					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 					chrome.browserAction.setIcon({path:"img/iconCol.png"});
-
-					if(radio){
-						radioAdd();
-					}
 					console.log(radio)
 				}
 				else{
@@ -169,6 +173,11 @@ chrome.runtime.onMessage.addListener(
 			case "radio":
 				radio = request.radio;
 				if(shuffle){shuffle = 0;}
+				if(vidInd==vidLinks.length-1){
+					if(radio){
+						radioAdd();
+					}
+				}
 				break
 			case "prevClicked":
 				if(playing){
@@ -209,6 +218,11 @@ chrome.runtime.onMessage.addListener(
 					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 				}			
 				chrome.browserAction.setIcon({path:"img/iconCol.png"});
+				if(vidInd==vidLinks.length-1){
+					if(radio){
+						radioAdd();
+					}
+				}
 				break;	
 			case "clear":
 				vidLinks=[];
