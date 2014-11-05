@@ -316,7 +316,6 @@ chrome.runtime.onMessage.addListener(
 			case "listSel":
 				listIndex = request.index;
 				makeRequest({"type":"getVids","life":2, "nextPageToken":'', "listID":listList[listIndex].id});
-				vidInd = -1;
 				break;
 			case "createNewPlaylist":
 				postRequest({"type":"makeNewPlaylist", "name":request.name});
