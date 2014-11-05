@@ -1,7 +1,7 @@
 {
   "name": "QueueIt",
   "description": "Manage your YouTube Playlists!!",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxk8IDinK/i54szpHsdQ6MjdDSlLUBDwPMyWkt+SfYTMo0QAtfbuDBqPtqxnNemkjdu518yc/rurP3rK2TUYcqWLpQpH/7hG6RnNVj07ZfjtqtOTdIG+OUBBV1mwKGfuWwBvuti/2qZ9FAk7OlZowO00SpTM7fjE/wy/1DAQLgEmsC+iEFuDSCShlfW3FVoBiw3S7q2IGR8AuqDb+dxGwD+7WWQjggTQQhgJoOoGli6LmYRA41EaXda2V7KJD/QcPgttaKIT4rTdJZy8NhsOoLy9CoQ9Vb+SgLJUCN6rBIP1yuwhu+KsJdWvRGnRHlttGjCYdbhReWeGdWtppaZAewwIDAQAB",
   "permissions": ["contextMenus",
     "identity",
