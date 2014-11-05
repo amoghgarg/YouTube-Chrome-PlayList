@@ -17,7 +17,7 @@ var shuffle
 var loop
 var radio
 var vidDuration = 0;
-
+var canUpdate = false;
 
 function tabCreated(tab){
 	tabId = tab.id;
@@ -26,9 +26,13 @@ function tabCreated(tab){
 		type:"tabCreated",
 		tabId:tabId
 	})
+	canUpdate = false
 };
 
 chrome.tabs.onRemoved.addListener(tabClosed);
+
+//chrome.tabs.onUpdated.addListener(tabUpdating);
+
 chrome.identity.getAuthToken({interactive:false}, function(token){
 	if(token){
 		var firstAuth;
@@ -55,6 +59,20 @@ function tabClosed(tabIdin, info){
 	}
 }
 
+// function tabUpdating(tabIdin, info){
+// 	if(tabIdin == tabId){
+// 		if(!canUpdate & info.status=="complete"){
+// 			chrome.browserAction.setIcon({path:"img/iconBw.png"});
+// 			playing = false;
+// 			canUpdate = false;
+// 			console.log("You navigated away from the page. QueueIt will stop playback.")			
+// 		}
+// 	}
+// }
+
+function tabUpdated(tab){
+
+}
 
 function radioAdd(){
 	console.log("_:_"+vidInd)
@@ -66,7 +84,11 @@ function radioAdd(){
 
 chrome.runtime.onMessage.addListener( 
 	function(request,sender,sendResponse){
+		console.log("Value of canChange:"+canUpdate)
 		switch(request.type){
+			case "videoLoadStarted":
+				//canUpdate = false;
+				break;
 			case "playClick":
 				if(!pageExists && vidLinks.length>0){
 					vidInd = 0;
@@ -113,10 +135,11 @@ chrome.runtime.onMessage.addListener(
 					type:"changedToNextSong",
 					id:vidInd
 				})
+				canUpdate = true;
 				chrome.tabs.update(tabId,{
 					url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 					active:false,
-				});
+				}, tabUpdated);
 				chrome.browserAction.setIcon({path:"img/iconCol.png"});
 				chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 
@@ -146,10 +169,11 @@ chrome.runtime.onMessage.addListener(
 						type:"changedToNextSong",
 						id:vidInd
 					})
+					canUpdate = true;
 					chrome.tabs.update(tabId,{
 						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 						active:false,
-					});
+					}, tabUpdated);
 					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 					chrome.browserAction.setIcon({path:"img/iconCol.png"});
 					console.log(radio)
@@ -185,10 +209,11 @@ chrome.runtime.onMessage.addListener(
 					if(vidInd==-1){
 						vidInd=vidLinks.length-1;
 					}
+					canUpdate = true;
 					chrome.tabs.update(tabId,{
 						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 						active:false,
-					});
+					}, tabUpdated);
 					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 					chrome.browserAction.setIcon({path:"img/iconCol.png"});
 				}
@@ -210,10 +235,11 @@ chrome.runtime.onMessage.addListener(
 					playing = true;
 				}
 				else{
+					canUpdate = true;
 					chrome.tabs.update(tabId,{
 						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 						active:false,
-					});
+					}, tabUpdated);
 					playing = true;
 					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
 				}			
@@ -249,19 +275,20 @@ chrome.runtime.onMessage.addListener(
 				vidLinks.splice(id,1);
 				if(id==vidInd){
 					vidInd=(vidInd)%vidLinks.length;
+					canUpdate = true;
 					chrome.tabs.update(tabId,{
 						url:"https://www.youtube.com/watch?v="+vidLinks[vidInd].link,
 						active:false,
-					});
+					}, tabUpdated);
 					chrome.tabs.executeScript(tabId, {file:"js/inject.js"})
+				}				
+				if(id<vidInd){
+					vidInd=(vidInd-1)%vidLinks.length;
 				}
 				chrome.runtime.sendMessage({
 						type:"changedToNextSong",
 						id:vidInd
 				})
-				if(id<vidInd){
-					vidInd=(vidInd-1)%vidLinks.length;
-				}
 				break;
 			case "listChanged":
 				//Sortable List changed

@@ -169,8 +169,10 @@ function nextClicked(){
 function clearClicked(){
 	if(currentLength>0){
 		var response = confirm("Clear the playlist?");
+
 		if(response==true){
 			clearQueue();
+			$("#radio").removeClass("checked");
 		}
 	}
 };
@@ -183,7 +185,7 @@ function clearQueue(){
 
 	setToPlay();
 	currentLength = 0;
-	// $("#saveButton")[0].style.visibility="hidden"
+	$("#radio").removeClass("checked");
 	$("#saveButton").hide();
 	setNotice()
 };
@@ -584,6 +586,7 @@ chrome.runtime.onMessage.addListener(
 				$("#"+clicked).addClass('ui-state-active');
 				$("#"+clicked).removeClass('ui-state-default');
 				nowPlay = clicked;
+				canChange = true;
 				break;
 			case "tabCreated":
 				tabId = request.tabId

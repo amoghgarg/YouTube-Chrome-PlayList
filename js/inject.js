@@ -3,16 +3,23 @@ currentVid = document.querySelector('video.video-stream');
 currentVid.addEventListener('ended',videoEndedHand);
 currentVid.addEventListener('pause', pausedFromWindow);
 currentVid.addEventListener('play', playedFromWindow);
-
+//currentVid.addEventListener('progress', videoLoadStarted)
 function pausedFromWindow(){
 	chrome.runtime.sendMessage({
 		type:'pausedFromWindow',
 	});
 }
+// function videoLoadStarted(){
+// 	chrome.runtime.sendMessage({
+// 		type:'videoLoadStarted',
+// 	});
+// }
 function playedFromWindow(){
 	chrome.runtime.sendMessage({
 		type:'playedFromWindow'});
 }
+
+
 
 function videoEndedHand(){
 	console.log("Video Ended");
