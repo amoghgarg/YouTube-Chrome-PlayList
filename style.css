@@ -5,7 +5,6 @@
 @font-face{font-family:'Open Sans Light';src: url('/fonts/OpenSans-Semibold-webfont.woff') format('woff');font-weight:bold;font-style:normal;}
 @font-face{font-family:'Open Sans';src: url('/fonts/OpenSans-Italic-webfont.woff') format('woff');font-weight:normal;font-style:italic}
 
-
 html {
     overflow:hidden;
 }
@@ -100,18 +99,50 @@ hr {
     border-right:none;
 }
 
+.compressed #nowPlayText{
+	display: none;
+}
+#nowPlayText{
+	font-size: 18px;
+	padding-top: 20px;
+	text-align: center;
+}
+
+.compressed.actionButtons{
+	height: 60px;
+	background: #c4302b;
+}
 .actionButtons{
-    height: 40px;
+    height: 300px;
+    position: relative;
 }
 #rightButtons{
     float: right;
-    width: 40%;
-    height: 30px;
+ /*   width: 40%;
+    height: 30px;*/
 }
 #leftButtons{
     float: left;
-    width: 60%;
-    height: 30px;
+  /*  width: 60%;
+    height: 30px;*/
+}
+
+.compressed #centerButtons{height: 60px;}
+#centerButtons{
+	display: block;
+	height: 260px;
+	position: relative;
+	width: 100%;
+}
+#showMore{
+	cursor: pointer;
+	display: inline-block;
+	left: 50%;
+	padding: 10px;
+	position: relative;
+	text-align: center;
+	text-decoration: underline;
+	transform: translateX(-50%);
 }
 
 #tabPlaylistContent span button, #queueSortable span button {float:right; margin-bottom:0px; visibility:hidden; margin-top: 10px}
@@ -134,7 +165,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     padding-left: 0;
     padding-right: 0;
     padding-bottom: 0;
-    padding-top: 1em;
+    padding-top: 0;
     outline: none;
     min-height: 270px;
     position: relative;
@@ -377,6 +408,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	color: #A6A5A5;
  }
 
+ .compressed #forward{top:15px;}
  #forward{
 	position: absolute;
 	left: 67%;
@@ -387,8 +419,9 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 
  #shuffle, #loop{
-    position: fixed;
-    top: 16px;
+	position: relative;
+	left: -50px;
+	top: -40px;
     color: #4F4C4C;
     font-family: 'FontAwesome';
     font-size: 11pt;
@@ -421,6 +454,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
  	font-family: 'FontAwesome';
  }
 
+.compressed #rewind{top:15px;}
 #rewind{
     position: absolute;
 	left: 33%;
@@ -491,21 +525,39 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 }
 .willPlay:hover, .willPause:hover{color: #292929;}
 
+.compressed #play{
+	background: none;
+	width: 30px;
+	height: 30px;	
+	top: -30px;
+}
+
 #play{
 	position: absolute;
 	left: 50%;
-	transform: translate(-50%,0);
-	width: 30px;
-	height: 30px;
-	margin-top: -5px;
+	top: 50%;
+	transform: translate(-50%,-50%);
+	width: 140px;
+	height: 140px;
+	/*margin-top: -5px;*/
 	font-size: 14pt;
+	border-radius: 50%;
+	background-color: white;
+	z-index: 2;
+}
+
+.compressed #volumeArea{
+	top: 15px;
+	left: 10px;
 }
 
 #volumeArea{
 	width: 86px;
 	height: 24px;
-	position: fixed;
-	left: 4px;
+	position: relative;
+	left: 20px;
+	top: 70px;
+	z-index: 2;
 }
 
 #volume{
@@ -644,15 +696,22 @@ input[type="text"]:focus {
 	-webkit-transition: 0.3s;
 }
 
+.compressed #timeSeek{
+	width: 100%;
+	height: 2px;
+	border-radius: 0;
+	top: 34px;
+}
 #timeSeek{
 	cursor: pointer;
 	float: left;
 	clear: left;
-	height:4px;
 	margin: 0px;
 	border:none;
-	position: fixed;
-	width: 180px;
+	position: relative;
+	width: 160px;
+	height: 160px;
+	border-radius: 50%;
 	top: 56px;
 	left: 50%;
 	transform: translate(-50%,0);
@@ -664,7 +723,19 @@ input[type="text"]:focus {
 	height: 0px;
 }
 
-#volumeSeek .ui-slider-range, #timeSeek .ui-slider-range { 
+.compressed #timeSeek .ui-slider-range{
+	height: 2px;
+	border-radius: 0;
+}
+#timeSeek .ui-slider-range{
+	width: 160px;
+	height: 160px;
+	border-radius: 50%;
+	background: #c4302b; 
+	border:none;
+	outline:none;
+}
+#volumeSeek .ui-slider-range { 
 	height:4px;
 	background: #c4302b; 
 	border:none;
@@ -673,6 +744,7 @@ input[type="text"]:focus {
 }
 
 #timeSeek .ui-slider-handle { 
+	display: none !important;
 	width: 10px;
 	height: 10px;
 	border-color: #ef2929; 
@@ -693,16 +765,23 @@ input[type="text"]:focus {
 	border-radius: 50%
 }
 
+.compressed #timeBar{display: none;}
+#timeBar{
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+}
 #timeDuration{
-	position: fixed;
+	/*position: fixed;
 	top:50px;
-	right: 29px;
+	right: 29px;*/
 	font-size: 9pt;
 }
 
 #timeCurrent{
-	position: fixed;
+	/*position: fixed;
 	top: 50px;
-	left: 35px;
+	left: 35px;*/
 	font-size: 9pt;
 }

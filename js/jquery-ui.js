@@ -12600,14 +12600,14 @@ var slider = $.widget( "ui.slider", $.ui.mouse, {
 
 		offset = closestHandle.offset();
 		mouseOverHandle = !$( event.target ).parents().addBack().is( ".ui-slider-handle" );
-		this._clickOffset = mouseOverHandle ? { left: 0, top: 0 } : {
-			left: event.pageX - offset.left - ( closestHandle.width() / 2 ),
-			top: event.pageY - offset.top -
-				( closestHandle.height() / 2 ) -
-				( parseInt( closestHandle.css("borderTopWidth"), 10 ) || 0 ) -
-				( parseInt( closestHandle.css("borderBottomWidth"), 10 ) || 0) +
-				( parseInt( closestHandle.css("marginTop"), 10 ) || 0)
-		};
+		// this._clickOffset = mouseOverHandle ? { left: 0, top: 0 } : {
+		// 	left: event.pageX - offset.left - ( closestHandle.width() / 2 ),
+		// 	top: event.pageY - offset.top -
+		// 		( closestHandle.height() / 2 ) -
+		// 		( parseInt( closestHandle.css("borderTopWidth"), 10 ) || 0 ) -
+		// 		( parseInt( closestHandle.css("borderBottomWidth"), 10 ) || 0) +
+		// 		( parseInt( closestHandle.css("marginTop"), 10 ) || 0)
+		// };
 
 		if ( !this.handles.hasClass( "ui-state-hover" ) ) {
 			this._slide( event, index, normValue );
@@ -12940,7 +12940,7 @@ var slider = $.widget( "ui.slider", $.ui.mouse, {
 			that = this,
 			animate = ( !this._animateOff ) ? o.animate : false,
 			_set = {};
-
+		
 		if ( this.options.values && this.options.values.length ) {
 			this.handles.each(function( i ) {
 				valPercent = ( that.values(i) - that._valueMin() ) / ( that._valueMax() - that._valueMin() ) * 100;
@@ -12976,7 +12976,23 @@ var slider = $.widget( "ui.slider", $.ui.mouse, {
 			this.handle.stop( 1, 1 )[ animate ? "animate" : "css" ]( _set, o.animate );
 
 			if ( oRange === "min" && this.orientation === "horizontal" ) {
-				this.range.stop( 1, 1 )[ animate ? "animate" : "css" ]( { width: valPercent + "%" }, o.animate );
+				if ($('.actionButtons').hasClass('compressed')){
+					this.range.stop( 1, 1 )[ animate ? "animate" : "css" ]( { width: valPercent + "%" }, o.animate );
+				}
+				else{
+					if (valPercent <= 50){
+						val = 270 + (3.6*valPercent);
+						val = val.toString() + "deg";
+						a = 'linear-gradient(90deg,  gray 50%, transparent 50%, transparent), linear-gradient('+val+',  gray 50%, #c4302b 50%, #c4302b)';
+						this.range.css({'background-image': a});
+					}
+					else if (valPercent > 50 && valPercent != 60){
+						val = -(270 + (3.6*(100-valPercent)));
+						val = val.toString() + "deg";
+						a = 'linear-gradient('+val+',  #c4302b 50%, transparent 50%, transparent), linear-gradient(270deg,  #c4302b 50%, gray 50%, gray)';
+						this.range.css({'background-image': a});
+					}
+				}
 			}
 			if ( oRange === "max" && this.orientation === "horizontal" ) {
 				this.range[ animate ? "animate" : "css" ]( { width: ( 100 - valPercent ) + "%" }, { queue: false, duration: o.animate } );

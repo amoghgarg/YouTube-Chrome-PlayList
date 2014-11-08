@@ -268,7 +268,7 @@ function radioToggled(event, ui){
 function updateSeekbar(response){
 	if(updateTime){
 		$("#timeCurrent").html(prettyTime(response.current));
-		$("#timeDuration").html(prettyTime(response.duration))
+		$("#timeDuration").html(' / '+prettyTime(response.duration))
 		$("#timeSeek").slider("option","value",response.current);
 		$("#timeSeek").slider("option","max",response.duration);
 		$("#volumeSeek").slider("option","value",response.volume)
