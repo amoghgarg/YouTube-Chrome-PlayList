@@ -16,6 +16,7 @@ function setNotice(){
 	$("#clear").hide();
 	$("#radio").hide();
 	$('hr').hide();
+	$('#completedText').hide();
 	$("#openSearch").click(function(){
 		$( "#tabs" ).tabs({"active":2});
 	})
@@ -339,7 +340,7 @@ function updateTable(){
 	//ui-state-default
 
 	for (i = 0; i < currentLength; i++) {
-		table += "<li id = \"" +i +"\" class=\"vidItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\"></span>"+
+		table += "<li id = \"" +i +"\" class=\"vidItem ui-state-default\" ><span class=\"ui-icon fa-headphones\"></span>"+
 		" <span><div>" + (vidLinks[i].name) + "</div></span> <span><button class=\"fa-trash remove\"></button><button title=\"Similar Songs\" class=\"fa-link similar\"></button></span> </li>";
 	}
 	document.getElementById('queueSortable').innerHTML = table;

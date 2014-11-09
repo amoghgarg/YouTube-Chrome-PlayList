@@ -12976,23 +12976,23 @@ var slider = $.widget( "ui.slider", $.ui.mouse, {
 			this.handle.stop( 1, 1 )[ animate ? "animate" : "css" ]( _set, o.animate );
 
 			if ( oRange === "min" && this.orientation === "horizontal" ) {
-				if ($('.actionButtons').hasClass('compressed')){
-					this.range.stop( 1, 1 )[ animate ? "animate" : "css" ]( { width: valPercent + "%" }, o.animate );
-				}
-				else{
-					if (valPercent <= 50){
-						val = 270 + (3.6*valPercent);
-						val = val.toString() + "deg";
-						a = 'linear-gradient(90deg,  gray 50%, transparent 50%, transparent), linear-gradient('+val+',  gray 50%, #c4302b 50%, #c4302b)';
-						this.range.css({'background-image': a});
-					}
-					else if (valPercent > 50 && valPercent != 60){
-						val = -(270 + (3.6*(100-valPercent)));
-						val = val.toString() + "deg";
-						a = 'linear-gradient('+val+',  #c4302b 50%, transparent 50%, transparent), linear-gradient(270deg,  #c4302b 50%, gray 50%, gray)';
-						this.range.css({'background-image': a});
-					}
-				}
+				// if ($('.actionButtons').hasClass('compressed')){
+				this.range.stop( 1, 1 )[ animate ? "animate" : "css" ]( { width: valPercent + "%" }, o.animate );
+				// }
+				// else{
+				// 	if (valPercent <= 50){
+				// 		val = 270 + (3.6*valPercent);
+				// 		val = val.toString() + "deg";
+				// 		a = 'linear-gradient(90deg,  gray 50%, transparent 50%, transparent), linear-gradient('+val+',  gray 50%, #c4302b 50%, #c4302b)';
+				// 		this.range.css({'background-image': a});
+				// 	}
+				// 	else if (valPercent > 50 && valPercent != 60){
+				// 		val = -(270 + (3.6*(100-valPercent)));
+				// 		val = val.toString() + "deg";
+				// 		a = 'linear-gradient('+val+',  #c4302b 50%, transparent 50%, transparent), linear-gradient(270deg,  #c4302b 50%, gray 50%, gray)';
+				// 		this.range.css({'background-image': a});
+				// 	}
+				// }
 			}
 			if ( oRange === "max" && this.orientation === "horizontal" ) {
 				this.range[ animate ? "animate" : "css" ]( { width: ( 100 - valPercent ) + "%" }, { queue: false, duration: o.animate } );

@@ -35,14 +35,15 @@
                 <div id="volumeArea">
                   <div id="volumeSeek"></div>
                   <button id="volume" class="fa-volume-off playerButtons"></button>
-                  <i id="muteIcon" class="fa fa-close"></i>
+                  <i id="muteIcon" class="fa fa-close playerButtons"></i>
                 </div>                
               </span>
               <span id="centerButtons">
-                <div id="timeSeek"><button id="play" class="fa-play playerButtons willPlay"></button></div>
-                <button id="rewind" class="fa-step-backward playerButtons"></button>   
+                <button id="rewind" class="fa-step-backward playerButtons"></button>
+                <button id="play" class="fa-play playerButtons willPlay"></button>   
                 <button id="forward" class="fa-step-forward playerButtons" ></button>
-                <div id="timeBar"><span id="timeCurrent">0:00</span><span id="timeDuration">0:00</span></div>
+                <div id="timeSeek"></div>
+                <div id="timeBar"><span id="timeCurrent">0:00</span><span id="timeDuration"> / 0:00</span></div>
               </span>              
               <span id="rightButtons">
                 <button id="shuffle" class="fa-random playerButtonsSmall"></button>
@@ -50,7 +51,9 @@
               </span>
             </div>
 
-            <div id="showMore">Expand to Queue</div>
+            <!-- <div id="showMore">Expand to Queue</div> -->
+            <div id="radio" class="fa-rss"> Radio</button>    </div>
+
             <ul id="queueSortable" >
             </ul> 
             
@@ -73,7 +76,7 @@
   <div id="saveFooter">
     <hr/>
     <div id="saveButton" class="fa-save"> Save</div>
-    <div id="radio" class="fa-rss"> Radio</button>    </div>
+    <!-- <div id="radio" class="fa-rss"> Radio</button>    </div> -->
     <div id="clear" class="fa-rotate-left"> Reset Queue</div>
   </div>
   <div id="completedText" class='hide'>Default</div>

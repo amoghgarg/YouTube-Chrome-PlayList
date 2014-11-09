@@ -5,6 +5,7 @@ var showRelated = 1;
 function tabChanged(event, ui){
 	if(ui.newPanel.selector!="#tabQueue"){
 		$('#saveFooter').hide();
+		$('#completedText').show();
 	}else{
 		$('#saveFooter	').show();
 	}

@@ -43,7 +43,7 @@ hr {
  }
 
 #resultsDisp{
-	height: 320px;
+	height: 360px;
 }
 
 
@@ -51,19 +51,21 @@ hr {
 	height: 370px;
 }
 
- #queueSortable {
-	height: 280px;
+#tabPlaylistContent, #queueSortable{
+	width: 317px;
 }
-
+#resultsDisp{width: 325px;}
  #tabPlaylistContent, #resultsDisp, #queueSortable {
 	margin: 0px;
-	width: 330px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
 
-#queueSortable{
-	margin-top:24px;
+ #queueSortable {
+	height: 250px;
+	margin-top:20px;
+	margin-left: 10px;
+	transition: height 0.3s;
 }
 
 
@@ -110,10 +112,12 @@ hr {
 
 .compressed.actionButtons{
 	height: 60px;
-	background: #c4302b;
+	background-color: #c4302b; 
+	color: white;
+	/*background: -webkit-linear-gradient(left, #F71A3C, #F71A3C 20%, #7C1919, #F71A3C 80%, #F71A3C);*/
 }
 .actionButtons{
-    height: 300px;
+    /*height: 300px;*/
     position: relative;
 }
 #rightButtons{
@@ -136,20 +140,24 @@ hr {
 }
 #showMore{
 	cursor: pointer;
-	display: inline-block;
+	display: block;
 	left: 50%;
 	padding: 10px;
 	position: relative;
 	text-align: center;
 	text-decoration: underline;
 	transform: translateX(-50%);
+	background: -webkit-linear-gradient(left, #7C1616, #F04B64 0%, #7C1616, #F04B64 100%, #7C1616);
+	box-shadow: 1px 2px 2px rgba(0,0,0,0.5);
+	color: rgba(255, 255, 255, 0.8);
+	z-index: -1;
 }
 
 #tabPlaylistContent span button, #queueSortable span button {float:right; margin-bottom:0px; visibility:hidden; margin-top: 10px}
 #tabPlaylistContent span div {position:relative; margin-top: 8px; width:82%; text-overflow: ellipsis; overflow:hidden; white-space: nowrap;  float: left; margin-left: 2px;}
 #queueSortable span div {position:relative; margin-top: 8px; width:90%; overflow:hidden; white-space: nowrap; text-overflow: ellipsis; float: left; margin-left: 2px;}
 span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px} 
-#tabPlaylistContent li,#queueSortable li {list-style-type:none; height:30px; width: 99%; float: left; cursor:pointer; }
+#tabPlaylistContent li,#queueSortable li {list-style-type:none; height:35px; width: 99%; float: left; cursor:pointer; }
 
 #tabs { 
     background: transparent; 
@@ -225,58 +233,103 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 }
 #resultsDisp .searchedVid {
     height: 60px;
-    padding: 0 5px;
+    padding-left: 5px;
     box-sizing: border-box;
-    width: 320px;
+    width: 330px;
     overflow: hidden;
 }
-
+#resultsDisp .searchedVid:nth-child(2n){
+	background-color: #fff;
+}
+#resultsDisp .searchedVid:nth-child(2n+1){
+	background-color: #eee;
+}
+#resultsDisp .searchedVid .search-btns{
+	position: relative;
+	width: 40px;
+	height: 60px;
+	display: inline-block;
+}
+#resultsDisp .searchedVid .text-div{
+	position: relative;
+	width: 190px;
+	height: 60px;
+	display: inline-block;
+	vertical-align: top;
+}	
+#resultsDisp .searchedVid .image{
+	width: 83px;
+	height: 60px;
+	display: inline-block;
+	position: relative;
+}
+#resultsDisp .searchedVid .white-cover{
+	position: absolute;
+	bottom: 0;
+	display: inline-block;
+	right: 0;
+	background: transparent;
+	z-index: 4;
+	border-left: 30px solid transparent;
+}
+#resultsDisp .searchedVid:nth-child(2n) .white-cover{
+	border-bottom: 60px solid #fff;
+}
+#resultsDisp .searchedVid:nth-child(2n+1) .white-cover{
+	border-bottom: 60px solid #eee;
+}
 #resultsDisp .searchedVid:hover {
-    background-color: #EDEDED;
+    background-color: #ababab;
     height: 60px;
     z-index: 5;
 }
+#resultsDisp .searchedVid:hover .white-cover{
+	border-bottom: 60px solid #ababab;
+}
 
 #resultsDisp img{
-    height: 50px;
+    height: 100%;
     position: relative;
-    top: 2px;
+    top: 1px;
     left: 2px;
 }
 
 
 #resultsDisp #text{
-    position: relative;
-    position: relative;
-    bottom: 55px;
-    left: 75px;
-    width: 240px;
-    line-height: 1.5em;
-    height: 3em;      
-    overflow: hidden;
+	position: relative;
+	left: 10px;
+	width: 100%;
+	line-height: 20px;
+	height: 40px;
+	font-size: 12px;
+	margin: 10px 0;
+	overflow: hidden;
 }
 
 #resultsDisp .addPlay, #resultsDisp .addOnly{
-	float:right;
-	position:relative;
+	position: absolute;
 	padding: 0;
-	border:0;
+	border: 0;
 	background: none;
-	font-size: 2em;
-	bottom: 70px;
-	visibility: hidden;
+	font-size: 1.5em;
+	right: 5px;
 	outline: none;
 	cursor: pointer;
+	visibility: hidden;
+	line-height: 30px;
 }
 
 #resultsDisp .addPlay{
-	right: 12px;
+	bottom: 0;
 }
 
 #resultsDisp .addOnly{
-	right: 20px;
+	bottom: 30px;
 }
 
+#tabPlaylistContent::-webkit-scrollbar, #queueSortable::-webkit-scrollbar, #resultsDisp::-webkit-scrollbar{
+	width: 4px;
+}
 #playlistList .ui-state-default, #queueSortable .ui-state-default{
     background:transparent;
     border:none;    
@@ -293,7 +346,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 }
 
-#playlistList .ui-state-hover, #queueSortable .ui-state-hover{
+#playlistList .ui-state-hover, .vidItem.ui-state-hover{
     background:#EDEDED;
     border:none;
     font-size:9pt;
@@ -301,24 +354,18 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 
 .playerButtons{
-    /*background-size: 25px 25px;
-    height: 25px;  
-    width: 25px;*/ 
   	background-color: transparent;
     border: none;
     outline: none;
     cursor: pointer;
-    color: #4F4C4C;
+    color: rgba(255,255,255, 0.8);
 }
 
-#shuffle:hover, .playerButtons:hover{
+#loop:hover, #shuffle:hover, .playerButtons:hover{
 	color: #292929;
 }
 
 .playerButtonsSmall{
-    /*background-size: 20px 20px;
-    height: 20px;  
-    width: 20px;*/
     background-color: transparent;
     border: none;
     outline: none;
@@ -403,7 +450,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
  .input-icon{
  	font-family: 'FontAwesome';
  	position: absolute;
-	top: 25px;
+	top: 13px;
 	left: 15px;
 	color: #A6A5A5;
  }
@@ -417,28 +464,16 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	font-size: 14pt;
  }
 
-
- #shuffle, #loop{
-	position: relative;
-	left: -50px;
-	top: -40px;
-    color: #4F4C4C;
-    font-family: 'FontAwesome';
-    font-size: 11pt;
- }
-
  #shuffle, #loop{
     position: fixed;
     top: 16px;
-    color: #4F4C4C;
+    color: rgba(255,255,255,0.8);
     font-family: 'FontAwesome';
     font-size: 11pt;
  }
 
-
-
  #shuffle{
-    left:85%;
+    left:83%;
  }
 
  #loop{
@@ -498,12 +533,14 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 
  #radio{
- 	cursor: pointer;
-	position: fixed;
+	cursor: pointer;
+	position: relative;
 	color: #4F4C4C;
-	left: 59px;
-	bottom: 9px;
+	text-align: left;
 	font-family: 'Open Sans Light';
+	padding-top: 5px;
+	padding-left: 10px;
+	display: inline-block;
  }
  #radio:before{
  	font-family: 'FontAwesome';
@@ -521,7 +558,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 .willPlay, .willPause{
     font-family: 'FontAwesome';
-    color: #4F4C4C;
+    color: rgba(255,255,255,0.8);
 }
 .willPlay:hover, .willPause:hover{color: #292929;}
 
@@ -529,13 +566,12 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	background: none;
 	width: 30px;
 	height: 30px;	
-	top: -30px;
 }
 
 #play{
 	position: absolute;
 	left: 50%;
-	top: 50%;
+	top: 48%;
 	transform: translate(-50%,-50%);
 	width: 140px;
 	height: 140px;
@@ -562,7 +598,6 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 #volume{
 	position: absolute;
-	left: 1px;
 	top: 1px;
 	font-size: 13pt;
 }
@@ -605,6 +640,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     cursor: pointer;
 }
 
+#tabQueue{z-index: 3;}
 #tabPlaylist input{
 	padding: 0 10px 2px;
 	width:290px;
@@ -635,15 +671,16 @@ input[type="text"]:focus {
 }
 
 #completedText{
-    background-color:#666666; 
-    color: #ffffff;
-    border-radius: 3px;
-    padding:5px;
-    position: fixed;
-    left: 50%;
-    bottom: 5px;
-    transform: translate(-50%, 0);
-    transition: opacity 500ms;
+	background-color: #E0645F;
+	border: 1px solid #c4302b;
+	color: white;
+	border-radius: 2px;
+	padding: 5px 17px;
+	position: fixed;
+	left: 50%;
+	top: 55px;
+	transform: translate(-50%, 0);
+	transition: opacity 500ms;
 }
 
 #completedText.show{
@@ -691,7 +728,7 @@ input[type="text"]:focus {
 	width: 0px;
 	top: 9px;
 	left: 30%;
-	background:gray;
+	background:rgba(0,0,0,0.5);
 	-webkit-transform: width(100%);
 	-webkit-transition: 0.3s;
 }
@@ -715,7 +752,7 @@ input[type="text"]:focus {
 	top: 56px;
 	left: 50%;
 	transform: translate(-50%,0);
-	background:gray;
+	background:rgba(0,0,0,0.3);
 }
 
 #volumeSeek .ui-slider-handle{ 
@@ -731,30 +768,30 @@ input[type="text"]:focus {
 	width: 160px;
 	height: 160px;
 	border-radius: 50%;
-	background: #c4302b; 
+	background:rgba(0,0,0,0.9);
 	border:none;
 	outline:none;
 }
 #volumeSeek .ui-slider-range { 
 	height:4px;
-	background: #c4302b; 
+	background: rgba(255,255,255,0.7); 
 	border:none;
 	outline:none;
 	border-radius: 0;
 }
 
 #timeSeek .ui-slider-handle { 
-	display: none !important;
-	width: 10px;
-	height: 10px;
-	border-color: #ef2929; 
-	border:none;
-	outline:none;
+	/*display: none !important;*/
+	width: 6px;
+	height: 6px;
+	border: none;
+	outline: none;
 	border-radius: 50%;
+	top: -2px;
+	margin: 0;
 	background: #212121;
-	top:-3px;
-	margin:0;
 	cursor: pointer;
+	box-shadow: 0px 0px 8px #212121;
 }
 
 #timeSeek .ui-slider-handle:active { 
@@ -765,23 +802,14 @@ input[type="text"]:focus {
 	border-radius: 50%
 }
 
-.compressed #timeBar{display: none;}
 #timeBar{
 	position: absolute;
-	bottom: 0;
-	left: 50%;
-	transform: translateX(-50%);
+	bottom: -23px;
+	right: 0;
+	color: black;
+	padding-right: 5px;
 }
-#timeDuration{
-	/*position: fixed;
-	top:50px;
-	right: 29px;*/
+#timeDuration, #timeCurrent{
 	font-size: 9pt;
-}
-
-#timeCurrent{
-	/*position: fixed;
-	top: 50px;
-	left: 35px;*/
-	font-size: 9pt;
+	font-family: 'Open Sans Light';
 }

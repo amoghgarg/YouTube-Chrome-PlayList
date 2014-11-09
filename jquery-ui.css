@@ -68,10 +68,9 @@
 
 /* states and images */
 .ui-icon {
-	display: block;
-	text-indent: -99999px;
-	overflow: hidden;
-	background-repeat: no-repeat;
+	display: inline-block;
+	float: left;
+	margin-top: 10px;
 }
 
 
@@ -974,6 +973,7 @@ body .ui-tooltip {
 .ui-icon {
 	width: 16px;
 	height: 16px;
+	font-family: 'FontAwesome';
 }
 /*.ui-icon,*/
 /*.ui-widget-content .ui-icon {
@@ -982,9 +982,9 @@ body .ui-tooltip {
 .ui-widget-header .ui-icon {
 	background-image: url("images/ui-icons_222222_256x240.png");
 }*/
-.ui-state-default .ui-icon {
+/*.ui-state-default .ui-icon {
 	background-image: url("images/ui-icons_888888_256x240.png");
-}
+}*/
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon {
 	background-image: url("images/ui-icons_454545_256x240.png");
