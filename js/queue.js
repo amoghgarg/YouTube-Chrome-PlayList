@@ -80,7 +80,8 @@ $(function() {
     	containment: "parent",
     	handle: 'span',
     	start: function(event, ui){
-    		before = ui.item.index();
+    		before = ui.item.index() - 1;
+
     	},
     	stop: function(event,ui){
     		updateID();
@@ -88,10 +89,11 @@ $(function() {
     		chrome.runtime.sendMessage({
     			type: "listChanged",
     			"before": before,
-    			"after": ui.item.index(),
+    			"after": ui.item.index() - 1,
     			"nowPlay":nowPlay
     		})
     	},
+    	
     });
     $( "#queueSortable" ).disableSelection();
  });
@@ -368,6 +370,9 @@ function updateTable(){
     	removeItem(id);
     	currentLength--;
     	if(currentLength==0){
+			chrome.runtime.sendMessage({
+					type:"clear"
+			});
     		setNotice();
     	}
     });

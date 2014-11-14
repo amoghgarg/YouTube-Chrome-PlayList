@@ -51,6 +51,15 @@ chrome.identity.getAuthToken({interactive:false}, function(token){
 })
 
 
+
+var id = chrome.contextMenus.create({
+	"title": "QueueIt the Video",
+	"contexts":["link"],
+    "id": "context" ,
+	"onclick" : handle,
+	"targetUrlPatterns": ["https://*.youtube.com/watch?v=*"]										 
+});
+
 function tabClosed(tabIdin, info){
 	if(tabIdin == tabId){
 		playing = false;
@@ -316,7 +325,6 @@ chrome.runtime.onMessage.addListener(
 			case "listSel":
 				listIndex = request.index;
 				makeRequest({"type":"getVids","life":2, "nextPageToken":'', "listID":listList[listIndex].id});
-				vidInd = -1;
 				break;
 			case "createNewPlaylist":
 				postRequest({"type":"makeNewPlaylist", "name":request.name});
@@ -427,17 +435,6 @@ var handle = function(e) {
 	}
 };
 
-
-chrome.runtime.onInstalled.addListener(function() {
-    var title = "Add to YouTube Queue";
-    var id = chrome.contextMenus.create({"title": title, "contexts":["link"],
-                                         "id": "context" ,
-										 "onclick" : handle,
-										 "targetUrlPatterns": ["https://*.youtube.com/watch?v=*"]										 
-										 }
-									    );
- 
-});
 
 function postRequest(input){
 	var postData;
