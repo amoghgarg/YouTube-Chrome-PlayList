@@ -51,9 +51,39 @@ chrome.identity.getAuthToken({interactive:false}, function(token){
 })
 
 
+var handle = function(e) {
+	var urlink = e.linkUrl;
 
-var id = chrome.contextMenus.create({
-	"title": "QueueIt the Video",
+	var video_id = urlink.split('v=')[1];
+	var ampersandPosition = video_id.indexOf('&');
+	if(ampersandPosition != -1) {
+	  video_id = video_id.substring(0, ampersandPosition);
+	}
+
+	var name;
+
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", e.linkUrl, true);
+	xmlhttp.send();
+	xmlhttp.onreadystatechange=function(){
+		if(xmlhttp.readyState==4 && xmlhttp.status==200){
+			var temp = document.createElement('div');
+			temp.innerHTML = xmlhttp.response;
+			name = temp.getElementsByTagName('title');
+			name = name[0].text;
+			var toAdd = {
+				"link" : video_id,
+				"name" : name
+			};
+			vidLinks.push(toAdd);
+		}
+	}
+};
+
+
+
+chrome.contextMenus.create({
+	"title": "Queue this Video",
 	"contexts":["link"],
     "id": "context" ,
 	"onclick" : handle,
@@ -404,36 +434,6 @@ function updateListList(){
 	makeRequest({"type":"listETag", "life":2});		
 };
 
-var handle = function(e) {
-	var urlink = e.linkUrl;
-
-	var video_id = urlink.split('v=')[1];
-	var ampersandPosition = video_id.indexOf('&');
-	if(ampersandPosition != -1) {
-	  video_id = video_id.substring(0, ampersandPosition);
-	}
-
-
-
-	var name;
-
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", e.linkUrl, true);
-	xmlhttp.send();
-	xmlhttp.onreadystatechange=function(){
-		if(xmlhttp.readyState==4 && xmlhttp.status==200){
-			var temp = document.createElement('div');
-			temp.innerHTML = xmlhttp.response;
-			name = temp.getElementsByTagName('title');
-			name = name[0].text;
-			var toAdd = {
-				"link" : video_id,
-				"name" : name
-			};
-			vidLinks.push(toAdd);
-		}
-	}
-};
 
 
 function postRequest(input){
