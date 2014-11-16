@@ -42,7 +42,7 @@ function setToPlay(){
 
 
 function hideWaitQ(){
-	document.getElementById("completedText").className = "show";	
+	document.getElementById("completedText").className = "show";
 	document.getElementById("loadingProgressG_1").style.visibility = "hidden";
 	setTimeout(function(){document.getElementById("completedText").className="hide"}, 1000);
 }
@@ -50,6 +50,7 @@ function hideWaitQ(){
 function showWaitQ(input){
 	document.getElementById("loadingProgressG_1").style.visibility = "visible";
 	document.getElementById("completedText").innerHTML = "Songs added to queue."
+	document.getElementById("completedText").style.top = "90px";	
 }
 
 function playClicked(){

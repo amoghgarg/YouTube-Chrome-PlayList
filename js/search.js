@@ -18,7 +18,8 @@ function hideWaitSearch(){
 
 function showWaitSearch(input){
 	document.getElementById("loadingProgressG_1").style.visibility = "visible";
-	document.getElementById("completedText").innerHTML = "Added to Queue"
+	document.getElementById("completedText").style.top = "55px";
+	document.getElementById("completedText").innerHTML = "Added to Queue";
 }
 
 $(function(){

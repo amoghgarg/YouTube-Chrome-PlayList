@@ -6,7 +6,8 @@
 @font-face{font-family:'Open Sans';src: url('/fonts/OpenSans-Italic-webfont.woff') format('woff');font-weight:normal;font-style:italic}
 
 html {
-    overflow:hidden;
+    overflow:hidden;    
+    -webkit-user-select: none;
 }
 body {
 	font-family: Helvetica;
@@ -679,10 +680,11 @@ input[type="text"]:focus {
 	padding: 5px 17px;
 	position: fixed;
 	left: 50%;
-	top: 55px;
+	text-align:center;
 	transform: translate(-50%, 0);
 	transition: opacity 500ms;
 }
+
 
 #completedText.show{
     opacity: 1;
