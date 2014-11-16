@@ -84,7 +84,8 @@ function addOnlyCall(event, ui){
 	chrome.runtime.sendMessage({
 		"type" : "addVideo",
 		"link" : serResults[ind].link,
-		"name" : serResults[ind].name
+		"name" : serResults[ind].name,
+		"thumb" : serResults[ind].thumbNail
 	})
 }
 
@@ -93,7 +94,8 @@ function addPlayCall(event, ui){
 	chrome.runtime.sendMessage({
 		"type" : "addPlayVideo",
 		"link" : serResults[ind].link,
-		"name" : serResults[ind].name
+		"name" : serResults[ind].name,
+		"thumb" : serResults[ind].thumbNail
 	})
 }
 

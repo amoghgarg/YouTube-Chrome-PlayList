@@ -62,8 +62,8 @@ hr {
 }
 
  #queueSortable {
-	height: 250px;
-	margin-top:20px;
+	height: 280px;
+	margin-top:15px;
 	margin-left: 10px;
 	transition: height 0.3s;
 }
@@ -111,7 +111,7 @@ hr {
 }
 
 .compressed.actionButtons{
-	height: 60px;
+	height: 40px;
 	background-color: #c4302b; 
 	color: white;
 	/*background: -webkit-linear-gradient(left, #F71A3C, #F71A3C 20%, #7C1919, #F71A3C 80%, #F71A3C);*/
@@ -131,7 +131,7 @@ hr {
     height: 30px;*/
 }
 
-.compressed #centerButtons{height: 60px;}
+.compressed #centerButtons{height: 40px;}
 #centerButtons{
 	display: block;
 	height: 260px;
@@ -456,7 +456,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	color: #A6A5A5;
  }
 
- .compressed #forward{top:15px;}
+ .compressed #forward{top:8px;}
  #forward{
 	position: absolute;
 	left: 67%;
@@ -467,7 +467,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
  #shuffle, #loop{
     position: fixed;
-    top: 16px;
+    top: 10px;
     color: rgba(255,255,255,0.8);
     font-family: 'FontAwesome';
     font-size: 11pt;
@@ -482,7 +482,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
  }
 
  #shuffle.checked, #loop.checked{
- 	color: #c4302b;
+ 	color: black;
  }
 
 
@@ -490,7 +490,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
  	font-family: 'FontAwesome';
  }
 
-.compressed #rewind{top:15px;}
+.compressed #rewind{top:8px;}
 #rewind{
     position: absolute;
 	left: 33%;
@@ -539,7 +539,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	color: #4F4C4C;
 	text-align: left;
 	font-family: 'Open Sans Light';
-	padding-top: 5px;
+	padding-top: 10px;
 	padding-left: 10px;
 	display: inline-block;
  }
@@ -572,7 +572,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 #play{
 	position: absolute;
 	left: 50%;
-	top: 48%;
+	top: 19px;
 	transform: translate(-50%,-50%);
 	width: 140px;
 	height: 140px;
@@ -584,7 +584,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 }
 
 .compressed #volumeArea{
-	top: 15px;
+	top: 7px;
 	left: 10px;
 }
 
@@ -738,7 +738,7 @@ input[type="text"]:focus {
 	width: 100%;
 	height: 2px;
 	border-radius: 0;
-	top: 34px;
+	top: 0px;
 }
 #timeSeek{
 	cursor: pointer;
@@ -805,7 +805,7 @@ input[type="text"]:focus {
 
 #timeBar{
 	position: absolute;
-	bottom: -23px;
+	bottom: -29px;
 	right: 0;
 	color: black;
 	padding-right: 5px;
