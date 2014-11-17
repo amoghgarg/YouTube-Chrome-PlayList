@@ -61,7 +61,7 @@ function updateLoginSpan(){
 		}
              
 		for (var i=0; i<listList.length; i++){
-			text=text+"<li id=\""+i+"\" class=\"listItem ui-state-default\" ><span class=\"ui-icon ui-icon-grip-dotted-horizontal\"></span><span><div>"+listList[i].name+"</div></span><span><button class=\"fa-trash delPlay\"></span></li>";
+			text=text+"<li id=\""+i+"\" class=\"listItem ui-state-default\" ><span class=\"ui-icon fa-list-ul\"></span><span><div>"+listList[i].name+"</div></span><span><button class=\"fa-trash delPlay\"></span></li>";
 		}
 		text = text + "</ul></div>"
 		document.getElementById('tabPlaylistContent').innerHTML = text;

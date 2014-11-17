@@ -44,20 +44,20 @@ hr {
  }
 
 #resultsDisp{
-	height: 360px;
+	height: 355px;
 }
 
 
 #tabPlaylistContent {
 	height: 370px;
+	margin-left: 5px;
 }
 
 #tabPlaylistContent, #queueSortable{
-	width: 317px;
+	width: 321px;
 }
 #resultsDisp{width: 325px;}
  #tabPlaylistContent, #resultsDisp, #queueSortable {
-	margin: 0px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
@@ -65,7 +65,7 @@ hr {
  #queueSortable {
 	height: 280px;
 	margin-top:15px;
-	margin-left: 10px;
+	margin-left: 5px;
 	transition: height 0.3s;
 }
 
@@ -155,10 +155,11 @@ hr {
 }
 
 #tabPlaylistContent span button, #queueSortable span button {float:right; margin-bottom:0px; visibility:hidden; margin-top: 10px}
-#tabPlaylistContent span div {position:relative; margin-top: 8px; width:82%; text-overflow: ellipsis; overflow:hidden; white-space: nowrap;  float: left; margin-left: 2px;}
-#queueSortable span div {position:relative; margin-top: 8px; width:90%; overflow:hidden; white-space: nowrap; text-overflow: ellipsis; float: left; margin-left: 2px;}
+#tabPlaylistContent span div {position:relative; margin-top: 8px; width:82%; text-overflow: ellipsis; overflow:hidden; position:relative; left:4px; white-space: nowrap;  float: left; margin-left: 2px;}
+#queueSortable span div {position:relative; margin-top: 8px; width:90%; overflow:hidden; position:relative; left:4px; white-space: nowrap; text-overflow: ellipsis; float: left; margin-left: 2px;}
 span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px} 
 #tabPlaylistContent li,#queueSortable li {list-style-type:none; height:35px; width: 99%; float: left; cursor:pointer; }
+#queueSortable .ui-icon, #tabPlaylistContent .ui-icon {position: relative; left: 4px}
 
 #tabs { 
     background: transparent; 

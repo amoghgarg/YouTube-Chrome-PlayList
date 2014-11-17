@@ -527,17 +527,20 @@ function makeRequest(input){
 			}
 			url = "https://www.googleapis.com/youtube/v3/playlists?part=snippet&mine=true&";
 			if(input.nextPageToken!=''){
-				url = url+"pageToken="+input.nextPageToken;
+				url = url+"pageToken="+input.nextPageToken+"&";
 			}
-			url = url + "&fields=items(id%2Csnippet%2Ftitle)%2CnextPageToken&access_token="+authToken;
+			url = url + "fields=items(id%2Csnippet%2Ftitle)%2CnextPageToken&access_token="+authToken;
 			break;
-		case "getVids":
+		case "getVids":			
 			if(authToken=='') {
-				makeRequest({"type":"auth", "life":input.life});		
+				makeRequest({"type":"auth", "life":2});		
 				return;
 			}
-			url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId="
-			url = url + input.listID + "&fields=items(snippet(title%2CresourceId))%2CnextPageToken&access_token="+authToken;
+			url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&"
+			if(input.nextPageToken!=''){
+				url = url+"pageToken="+input.nextPageToken+"&";
+			}
+			url = url + "playlistId="+ input.listID + "&fields=items(snippet(title%2CresourceId))%2CnextPageToken&access_token="+authToken;
 			break;
 		case "listETag":
 			if(authToken=='') {
@@ -603,7 +606,7 @@ function makeRequest(input){
 							parseListJSON(xmlhttp.response)
 							break;
 						case "getVids":
-							parseVidListJSON(xmlhttp.response)
+							parseVidListJSON(xmlhttp.response, input.listID)
 							break;
 						case "listETag":
 							var obj = $.parseJSON(xmlhttp.response);
@@ -704,7 +707,7 @@ function parseCreatePlaylistJSON(input){
 }
 
 
-function parseVidListJSON(input){
+function parseVidListJSON(input, playIdentity){
 	
 	var obj = $.parseJSON(input);
 	for (var i = 0; i<obj.items.length; i++){
@@ -717,7 +720,7 @@ function parseVidListJSON(input){
 	}
 	var waiting = 0;
 	if(obj.nextPageToken){
-		makeRequest({"type":"getVids","life":2,"nextPageToken":obj.nextPageToken})
+		makeRequest({"type":"getVids","life":2,"nextPageToken":obj.nextPageToken, "listID":playIdentity})
 		waiting = 1;
 	}
 	chrome.runtime.sendMessage({
