@@ -26,6 +26,10 @@ ul {-webkit-padding-start: 00px;
 	-webkit-margin-end: 0px;
 }
 
+#saveDiv{
+	color: #c4302b;
+	font-weight: bold;
+}
 
 hr {
     display: block;
@@ -155,11 +159,34 @@ hr {
 }
 
 #tabPlaylistContent span button, #queueSortable span button {float:right; margin-bottom:0px; visibility:hidden; margin-top: 10px}
-#tabPlaylistContent span div {position:relative; margin-top: 8px; width:82%; text-overflow: ellipsis; overflow:hidden; position:relative; left:4px; white-space: nowrap;  float: left; margin-left: 2px;}
+#tabPlaylistContent span div {position:relative; margin-top: 8px; width:82%; top: 3px; text-overflow: ellipsis; overflow:hidden; position:relative; left:4px; white-space: nowrap;  float: left; margin-left: 2px;}
 #queueSortable span div {position:relative; margin-top: 8px; width:90%; overflow:hidden; position:relative; left:4px; white-space: nowrap; text-overflow: ellipsis; float: left; margin-left: 2px;}
 span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px} 
-#tabPlaylistContent li,#queueSortable li {list-style-type:none; height:35px; width: 99%; float: left; cursor:pointer; }
+#queueSortable li {list-style-type:none; height:35px; width: 99%; float: left; cursor:pointer; }
 #queueSortable .ui-icon, #tabPlaylistContent .ui-icon {position: relative; left: 4px}
+
+#tabPlaylistContent li .fa-list-ul{
+	top: 4px;
+	position: relative;
+}
+
+#tabPlaylistContent li .fa-trash{
+	top: 3px;
+	position: relative;
+}
+
+
+#tabPlaylistContent li{
+	list-style-type:none;
+	height:40px; 
+	width: 99%; 
+	float: left; 
+	cursor:pointer; 
+}
+
+#playlistList span button{
+	background: #C7C7C7 !important;
+}
 
 #tabs { 
     background: transparent; 
@@ -333,10 +360,28 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 #tabPlaylistContent::-webkit-scrollbar, #queueSortable::-webkit-scrollbar, #resultsDisp::-webkit-scrollbar{
 	width: 4px;
 }
-#playlistList .ui-state-default, #queueSortable .ui-state-default{
+
+#queueSortable .ui-state-default{
     background:transparent;
     border:none;    
     font-size:9pt;
+}
+
+#playlistList .ui-state-default{
+	background:#EDEDED;
+    border:none;    
+    font-size:13px;
+    margin-bottom:5px;
+    color: #555
+}
+
+#playlistList .ui-state-hover{
+    background:#C7C7C7;
+    border:none;
+    font-size:13px;
+    margin-bottom:5px;
+    color: #555;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.2)
 }
 
 
@@ -349,7 +394,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 }
 
-#playlistList .ui-state-hover, .vidItem.ui-state-hover{
+.vidItem.ui-state-hover{
     background:#EDEDED;
     border:none;
     font-size:9pt;
@@ -385,17 +430,24 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 }
 
 #newPlaylistButton{
-	background-color: #c4302b;
-	height: 38px;
-	line-height: 38px;
-	width: 94px;
+	color: #c4302b;
+	font-weight: bold;
+	background-color: #EDEDED;
+	height: 30px;
+	line-height: 30px;
+	width: 57px;
 	text-align: center;
-	color: white;
 	border-radius: 2px;
-	margin: 0 auto;
 	cursor: pointer;
-	margin-top: 10px;
 	font-family: 'Open Sans Light';
+	position: relative;
+	bottom: 26px;
+	left: 270px
+}
+
+#newPlaylistButton:hover{
+	box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+	background-color: #D7D7D7
 }
 
 #loginButton{
@@ -607,7 +659,14 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 #choiceText{
     text-align: center;
-    padding-bottom: 1newem;
+	height: 60px;
+	background: #EDEDED;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+	line-height: 60px;
+	width: 318px;
+	position: relative;
+	left: 5px;
+	bottom:30px;
 }
 
 #noticePl{
@@ -646,7 +705,9 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 #tabQueue{z-index: 3;}
 #tabPlaylist input{
 	padding: 0 10px 2px;
-	width:290px;
+	width:234px;
+	position: relative;
+	top: 5px;
 }
 
 input[type="text"] {

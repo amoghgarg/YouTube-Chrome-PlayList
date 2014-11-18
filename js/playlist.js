@@ -177,7 +177,7 @@ function saveQueue(){
 	text = text + "<div id=\"newPlaylistButton\">Save</div>"
 	text = text + "<button id=\"cancelSaveButton\" class=\"fa-remove\" title=\"Cancel save\"></button>"
 	if(listList.length>0){
-		text = text +" <div id=\"choiceText\"> Or add to existing playlists:</div>";		
+		text = text +" <div id=\"choiceText\"> <div>Or add to existing playlists:</div></div>";		
 	}
 	else{
 		$("#noticePl").css("visibility","hidden");
