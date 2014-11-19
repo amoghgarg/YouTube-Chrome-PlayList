@@ -95,6 +95,7 @@ function tabClosed(tabIdin, info){
 		playing = false;
 		pageExists = false;
 		chrome.browserAction.setIcon({path:"img/iconBw.png"});
+		window.alert("QueueIt has been paused.")
 	}
 }
 
