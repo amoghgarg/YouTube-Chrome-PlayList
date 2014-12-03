@@ -438,6 +438,24 @@ function updateListList(){
 
 
 function postRequest(input){
+
+	chrome.identity.getAuthToken({interactive:false}, function(token){
+		if(token){
+			var firstAuth;
+			if(authToken==''){
+				firstAuth = true;
+			}
+			authToken = token;
+			loggedIn = true;
+			if(firstAuth){
+				updateListList();
+				chrome.runtime.sendMessage({
+					type:"loadingLists"
+				})
+			}
+		}
+	})
+
 	var postData;
 	var url
 	switch(input.type){
@@ -495,6 +513,23 @@ function postRequest(input){
 }	
 
 function makeRequest(input){
+
+	chrome.identity.getAuthToken({interactive:false}, function(token){
+		if(token){
+			var firstAuth;
+			if(authToken==''){
+				firstAuth = true;
+			}
+			authToken = token;
+			loggedIn = true;
+			if(firstAuth){
+				updateListList();
+				chrome.runtime.sendMessage({
+					type:"loadingLists"
+				})
+			}
+		}
+	})
 
 	input.life = input.life - 1;
 	var url;

@@ -53,6 +53,7 @@ function updateLoginSpan(){
 		var currentLength = back.vidLinks.length;
 		
 		$("#saveDiv").html("");
+		$("#saveDiv").css("height", "0")
 		text = "<div><ul id=\"playlistList\">"
 
 
@@ -171,11 +172,11 @@ function addToPlaylist(event, ui){
 }
 
 function saveQueue(){
-	$("#tabPlaylistContent").css("height", "227px")
+	$("#tabPlaylistContent").css("height", "251px")
 	$( "#tabs" ).tabs({"active":0});
 	var text = "<input type=\"text\" id=\"playListName\" placeholder=\"Save to a new playlist...\" >";
 	text = text + "<div id=\"newPlaylistButton\">Save</div>"
-	text = text + "<button id=\"cancelSaveButton\" class=\"fa-remove\" title=\"Cancel save\"></button>"
+	text = text + "<div id=\"cancelSaveButton\">Cancel</div>"	
 	if(listList.length>0){
 		text = text +" <div id=\"choiceText\"> <div>Or add to existing playlists:</div></div>";		
 	}
@@ -183,6 +184,7 @@ function saveQueue(){
 		$("#noticePl").css("visibility","hidden");
 	}
 	document.getElementById("saveDiv").innerHTML = text;
+	$("#saveDiv").css("height", "91px")
 	$("#cancelSaveButton").click(updateLoginSpan);
 	setTimeout(function(){
 		$("#playListName").focus();

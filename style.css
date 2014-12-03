@@ -29,6 +29,7 @@ ul {-webkit-padding-start: 00px;
 #saveDiv{
 	color: #c4302b;
 	font-weight: bold;
+	padding-top: 4px;
 }
 
 hr {
@@ -55,6 +56,8 @@ hr {
 #tabPlaylistContent {
 	height: 370px;
 	margin-left: 5px;
+	position: relative;
+	top: 13px;
 }
 
 #tabPlaylistContent, #queueSortable{
@@ -88,7 +91,7 @@ hr {
 }
 
 #tabPlaylistContent::-webkit-scrollbar-thumb, #queueSortable::-webkit-scrollbar-thumb, #resultsDisp::-webkit-scrollbar-thumb{
-    background-color:#c0c0c0;
+    background-color:#c4302b;
     width:8px;
     border:none;     
     border-right:none;
@@ -159,7 +162,7 @@ hr {
 }
 
 #tabPlaylistContent span button, #queueSortable span button {float:right; margin-bottom:0px; visibility:hidden; margin-top: 10px}
-#tabPlaylistContent span div {position:relative; margin-top: 8px; width:82%; top: 3px; text-overflow: ellipsis; overflow:hidden; position:relative; left:4px; white-space: nowrap;  float: left; margin-left: 2px;}
+#tabPlaylistContent span div {position:relative; margin-top: 8px; width:82%; top: 3px; text-overflow: ellipsis; overflow:hidden; position:relative; left:11px; white-space: nowrap;  float: left; margin-left: 2px;}
 #queueSortable span div {position:relative; margin-top: 8px; width:90%; overflow:hidden; position:relative; left:4px; white-space: nowrap; text-overflow: ellipsis; float: left; margin-left: 2px;}
 span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px} 
 #queueSortable li {list-style-type:none; height:35px; width: 99%; float: left; cursor:pointer; }
@@ -167,6 +170,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 #tabPlaylistContent li .fa-list-ul{
 	top: 4px;
+	left:8px;
 	position: relative;
 }
 
@@ -372,7 +376,8 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
     border:none;    
     font-size:13px;
     margin-bottom:5px;
-    color: #555
+    color: #555;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.2)
 }
 
 #playlistList .ui-state-hover{
@@ -442,7 +447,7 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 	font-family: 'Open Sans Light';
 	position: relative;
 	bottom: 26px;
-	left: 270px
+	left: 267px
 }
 
 #newPlaylistButton:hover{
@@ -472,17 +477,26 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 
 #cancelSaveButton{
-    background-size: 20px 20px;
-	height: 20px;
-	width: 20px;
-	position: relative;
-	left: 90%;
-	bottom: -283px;
-	background-color: transparent;
-	border: none;
-	outline: none;
+   color: #c4302b;
+	font-weight: bold;
+	background-color: #EDEDED;
+	height: 30px;
+	line-height: 30px;
+	width: 314px;
+	text-align: center;
+	border-radius: 2px;
 	cursor: pointer;
-	font-family: 'FontAwesome';
+	font-family: 'Open Sans Light';
+	position: relative;
+	bottom: -306px;
+	left: 5px;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+#cancelSaveButton:hover{
+	box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+	background-color: #D7D7D7;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.2);
 }
 
 #butSearch{
@@ -659,14 +673,14 @@ span.ui-icon-grip-dotted-horizontal {float:left; margin-top: 7px}
 
 #choiceText{
     text-align: center;
-	height: 60px;
+	height: 46px;
 	background: #EDEDED;
 	box-shadow: 0 1px 1px rgba(0,0,0,0.2);
-	line-height: 60px;
+	line-height: 46px;
 	width: 318px;
 	position: relative;
 	left: 5px;
-	bottom:30px;
+	bottom:43px;
 }
 
 #noticePl{
